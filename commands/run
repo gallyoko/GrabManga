@@ -1,0 +1,5 @@
+echo "Application launched, please waiting 15-20s"
+echo ""
+echo "Ctrl+C to cancel"
+
+ionic serve >> log/serve.log
