@@ -1,11 +1,18 @@
 path_commands=`pwd`
 
+rm -f ${path_commands}/../log/build.log
+
 cd ${path_commands}/../
 
 if [ ! -e "delivery/keystore/grabmanga.keystore" ]
 then
-    sh ${path_commands}/generateKeystore
+    rm -Rf delivery
+    mkdir -p delivery/keystore
+    cd delivery/keystore
+    keytool -genkey -v -keystore grabmanga.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
 fi
+
+cd ${path_commands}/../
 
 if [ ! -d platforms/android ]
 then
