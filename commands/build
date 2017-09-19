@@ -1,0 +1,27 @@
+path_commands=`pwd`
+
+cd ${path_commands}/../
+
+if [ ! -e "delivery/keystore/grabmanga.keystore" ]
+then
+    sh ${path_commands}/generateKeystore
+fi
+
+if [ ! -d platforms/android ]
+then
+    cordova platform add android >> ${path_commands}/../log/build.log
+fi
+
+cordova build --release >> ${path_commands}/../log/build.log
+
+cd ${path_commands}/../platforms/android/build/outputs/apk
+
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${path_commands}/../delivery/keystore/grabmanga.keystore android-release-unsigned.apk alias_name >> ${path_commands}/../log/build.log
+
+if [ -f ${path_commands}/../delivery/GrabManga.apk ]
+then
+    date=`date '+%Y-%m-%d_%H%M%S'`
+    mv -f ${path_commands}/../delivery/GrabManga.apk ${path_commands}/../delivery/GrabManga_${date}.apk
+fi
+
+mv -f ${path_commands}/../platforms/android/build/outputs/apk/android-release-unsigned.apk ${path_commands}/../delivery/GrabManga.apk
