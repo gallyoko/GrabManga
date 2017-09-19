@@ -1,5 +1,8 @@
+/keystore
 /node_modules
+/platforms
+/plugins
 /www
 /.sourcemaps
 /.idea
-
+/delivery

@@ -1,0 +1,15 @@
+current_path=`pwd`
+
+cd ${current_path}
+cordova build --release > ${current_path}/delivery/build.log
+
+cd ${current_path}/platforms/android/build/outputs/apk
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${current_path}/delivery/grabmanga.keystore android-release-unsigned.apk alias_name >> ${current_path}/delivery/build.log
+#zipalign -v 4 android-release-unsigned.apk GrabManga.apk >> ${current_path}/delivery/build.log
+
+if [ -f ${current_path}/delivery/GrabManga.apk ]
+then
+    date=`date '+%Y-%m-%d_%H%M%S'`
+    mv -f ${current_path}/delivery/GrabManga.apk ${current_path}/delivery/GrabManga_${date}.apk
+fi
+mv -f ${current_path}/platforms/android/build/outputs/apk/android-release-unsigned.apk ${current_path}/delivery/GrabManga.apk
