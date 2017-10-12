@@ -8,6 +8,7 @@ export class MangaService {
     private routeGetMangaByTitleBegin: any = '/mangas/search/begin';
     private routeGetMangaInfo: any = '/manga/info';
     private routeGenerateManga: any = '/generate/manga';
+    private routeGetCurrentDowload: any = '/download/user/current';
 
     constructor(public http: Http, public commonService: CommonService) {
         
@@ -70,6 +71,25 @@ export class MangaService {
                         //resolve(false);
                     }
                 );
+        });
+    }
+
+    getCurrentDownload() {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGetCurrentDowload+'/'+token;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            resolve(response.data);
+                        },
+                        err => {
+                            //resolve(this.commonService.errorApiReturn(err));
+                            resolve(false);
+                        }
+                    );
+            });
         });
     }
 }
