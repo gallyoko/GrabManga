@@ -8,6 +8,7 @@ import { MyApp } from './app.component';
 import { LoginPage } from '../pages/login/index';
 import { HomePage } from '../pages/home/home';
 import { MangaPage } from '../pages/manga/manga';
+import { MangaInfoPage } from '../pages/manga/manga.info';
 import { DownloadPage } from '../pages/download/download';
 import { ArchivePage } from '../pages/archive/archive';
 
@@ -21,6 +22,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
       LoginPage,
       HomePage,
       MangaPage,
+      MangaInfoPage,
       DownloadPage,
       ArchivePage
   ],
@@ -36,6 +38,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
       LoginPage,
       HomePage,
       MangaPage,
+      MangaInfoPage,
       DownloadPage,
       ArchivePage
   ],
