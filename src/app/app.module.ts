@@ -12,6 +12,7 @@ import { MangaInfoPage } from '../pages/manga/manga.info';
 import { DownloadPage } from '../pages/download/download';
 import { ArchivePage } from '../pages/archive/archive';
 
+import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -24,7 +25,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
       MangaPage,
       MangaInfoPage,
       DownloadPage,
-      ArchivePage
+      ArchivePage,
+      ProgressBarComponent
   ],
   imports: [
       BrowserModule,
