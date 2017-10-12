@@ -1,10 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { HttpModule } from '@angular/http';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
+import { LoginPage } from '../pages/login/index';
 import { HomePage } from '../pages/home/home';
-import { ListPage } from '../pages/list/list';
+import { MangaPage } from '../pages/manga/manga';
+import { DownloadPage } from '../pages/download/download';
+import { ArchivePage } from '../pages/archive/archive';
+
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -12,18 +18,26 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    ListPage
+      LoginPage,
+      HomePage,
+      MangaPage,
+      DownloadPage,
+      ArchivePage
   ],
   imports: [
-    BrowserModule,
-    IonicModule.forRoot(MyApp),
+      BrowserModule,
+      HttpModule,
+      IonicModule.forRoot(MyApp),
+      IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
-    HomePage,
-    ListPage
+      MyApp,
+      LoginPage,
+      HomePage,
+      MangaPage,
+      DownloadPage,
+      ArchivePage
   ],
   providers: [
     StatusBar,
