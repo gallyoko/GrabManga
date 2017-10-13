@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { MangaService } from '../../providers/manga-service';
+import { Observable } from 'rxjs/Rx';
 
 @Component({
     selector: 'page-download',
@@ -10,19 +11,28 @@ import { MangaService } from '../../providers/manga-service';
 })
 export class DownloadPage {
 
-    private progress:any = 0;
+    private subscription:any = 0;
+    private downloads:any = [];
 
     constructor(public navCtrl: NavController,
                 public commonService: CommonService, public mangaService: MangaService) {
-        this.loadProgress();
+    }
+
+    ionViewDidLoad () {
+        this.subscription = Observable.interval(1000).subscribe(x => {
+            this.loadProgress();
+        });
+    }
+
+    ionViewDidLeave () {
+        this.subscription.unsubscribe ();
     }
 
     loadProgress() {
-        return this.mangaService.getCurrentDownload().then(download => {
-            let currentPageDecode = parseInt(download['currentPageDecode']);
-            let countPage = parseInt(download['countPage']);
-            let progress = (currentPageDecode / countPage) * 100;
-            this.progress = parseInt(""+progress);
+        this.mangaService.getWaitingDownloads().then(downloads => {
+            if (downloads !== false) {
+                this.downloads = downloads;
+            }
         });
     }
 

@@ -8,5 +8,10 @@
 </ion-header>
 
 <ion-content padding>
-
+  <ion-list>
+    <ion-item *ngFor="let archive of archives">
+      <h2>{{archive.title}}</h2>
+      <h3>{{archive.manga.title}}</h3>
+    </ion-item>
+  </ion-list>
 </ion-content>

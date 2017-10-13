@@ -32,6 +32,14 @@ export class MangaInfoPage {
     }
 
     download() {
-        this.mangaService.generateManga(this.mangaId);
+        this.commonService.loadingShow('Please wait...');
+        this.mangaService.generateManga(this.mangaId).then(generate => {
+            if (generate) {
+                this.commonService.toastShow('Le manga a été ajouté aux téléchargements');
+            } else {
+                this.commonService.toastShow("Erreur lors de l'ajout du manga aux téléchargements");
+            }
+            this.commonService.loadingHide();
+        });
     }
 }

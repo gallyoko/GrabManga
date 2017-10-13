@@ -9,6 +9,8 @@ export class MangaService {
     private routeGetMangaInfo: any = '/manga/info';
     private routeGenerateManga: any = '/generate/manga';
     private routeGetCurrentDowload: any = '/download/user/current';
+    private routeGetWaitingDowloads: any = '/downloads/user/waiting';
+    private routeGetFinishedDowloads: any = '/downloads/user/finished';
 
     constructor(public http: Http, public commonService: CommonService) {
         
@@ -58,19 +60,22 @@ export class MangaService {
     }
 
     generateManga(mangaId) {
-        this.commonService.getToken().then(token => {
-            let route = this.routeGenerateManga+'/'+token+'/'+mangaId;
-            this.http.get(this.commonService.getUrlApi()+route)
-                .map(res => res.json())
-                .subscribe(
-                    response => {
-                        //resolve(response.data);
-                    },
-                    err => {
-                        //resolve(this.commonService.errorApiReturn(err));
-                        //resolve(false);
-                    }
-                );
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGenerateManga+'/'+token+'/'+mangaId;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(true);
+                        },
+                        err => {
+                            //resolve(this.commonService.errorApiReturn(err));
+                            resolve(false);
+                        }
+                    );
+            });
         });
     }
 
@@ -82,7 +87,60 @@ export class MangaService {
                     .map(res => res.json())
                     .subscribe(
                         response => {
-                            resolve(response.data);
+                            this.commonService.setToken(response.token);
+                            if (response.data) {
+                                resolve(response.data);
+                            } else {
+                                resolve(false);
+                            }
+                        },
+                        err => {
+                            //resolve(this.commonService.errorApiReturn(err));
+                            resolve(false);
+                        }
+                    );
+            });
+        });
+    }
+
+    getWaitingDownloads() {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGetWaitingDowloads+'/'+token;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            if (response.data) {
+                                resolve(response.data);
+                            } else {
+                                resolve(false);
+                            }
+                        },
+                        err => {
+                            //resolve(this.commonService.errorApiReturn(err));
+                            resolve(false);
+                        }
+                    );
+            });
+        });
+    }
+
+    getFinishedDownloads() {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGetFinishedDowloads+'/'+token;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            if (response.data) {
+                                resolve(response.data);
+                            } else {
+                                resolve(false);
+                            }
                         },
                         err => {
                             //resolve(this.commonService.errorApiReturn(err));
