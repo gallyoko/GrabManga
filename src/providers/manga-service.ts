@@ -11,6 +11,7 @@ export class MangaService {
     private routeGetCurrentDowload: any = '/download/user/current';
     private routeGetWaitingDowloads: any = '/downloads/user/waiting';
     private routeGetFinishedDowloads: any = '/downloads/user/finished';
+    private routeRemoveDowload: any = '/download/remove';
 
     constructor(public http: Http, public commonService: CommonService) {
         
@@ -136,11 +137,27 @@ export class MangaService {
                     .subscribe(
                         response => {
                             this.commonService.setToken(response.token);
-                            if (response.data) {
-                                resolve(response.data);
-                            } else {
-                                resolve(false);
-                            }
+                            resolve(response.data);
+                        },
+                        err => {
+                            //resolve(this.commonService.errorApiReturn(err));
+                            resolve(null);
+                        }
+                    );
+            });
+        });
+    }
+
+    removeDownload(id) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeRemoveDowload+'/'+token+'/'+id;
+                this.http.delete(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(true);
                         },
                         err => {
                             //resolve(this.commonService.errorApiReturn(err));

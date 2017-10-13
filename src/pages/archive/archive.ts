@@ -18,15 +18,29 @@ export class ArchivePage {
     }
 
     ionViewDidLoad () {
+        this.commonService.loadingShow('Please wait...');
         this.showArchives();
     }
 
     showArchives() {
         this.mangaService.getFinishedDownloads().then(archives => {
-            if (archives !== false) {
-                this.archives = archives;
-            }
+            this.archives = archives;
+            this.commonService.loadingHide();
         });
+    }
+
+    remove(archive) {
+        this.commonService.loadingShow('Please wait...');
+        this.mangaService.removeDownload(archive.id).then(remove => {
+            if (!remove) {
+                this.commonService.toastShow('Impossible de supprimer le téléchargement');
+            }
+            this.showArchives();
+        });
+    }
+
+    download(archive) {
+        console.log('download id='+archive.id);
     }
 
 }
