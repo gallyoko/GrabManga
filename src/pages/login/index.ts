@@ -14,10 +14,9 @@ export class LoginPage {
 
     constructor(public navCtrl: NavController, public commonService: CommonService,
                 public securityService: SecurityService) {
-        this.init();
     }
 
-    init() {
+    ionViewDidEnter() {
         this.password = '';
         this.commonService.loadingShow('Please wait...');
         this.securityService.checkAuth().then(auth => {

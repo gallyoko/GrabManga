@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Http } from '@angular/http';
 import { App, NavController, Platform, LoadingController, ToastController } from 'ionic-angular';
+import { LoginPage } from '../pages/login/index';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { Toast } from '@ionic-native/toast';
 import 'rxjs/add/operator/map';
@@ -77,6 +78,22 @@ export class CommonService {
     let jsonContent:any = error.json();
     let errorApiReturn = {status: false, code: error.status, message: jsonContent.message};
     return errorApiReturn;
+  }
+
+  checkErrorApi(err) {
+    if (err.status = 500) {
+        let error:any = err;
+        let jsonContent:any = error.json();
+        let exception:any = jsonContent.error.exception;
+        let message:any = exception[0]['message'];
+        if (message.substring(0, 3) == '401') {
+            this.navCtrl.setRoot(LoginPage);
+        } else {
+            return false;
+        }
+    } else {
+      return false;
+    }
   }
 
   setToken(token) {

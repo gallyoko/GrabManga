@@ -28,7 +28,6 @@ export class SecurityService {
                         resolve(true);
                     },
                     err => {
-                        //resolve(this.commonService.errorApiReturn(err));
                         resolve(false);
                     }
                 );
@@ -50,7 +49,6 @@ export class SecurityService {
                             resolve(true);
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
                             resolve(false);
                         }
                     );

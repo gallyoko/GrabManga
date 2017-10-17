@@ -31,8 +31,7 @@ export class MangaService {
                             resolve(response.data);
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
-                            resolve(false);
+                            resolve(this.commonService.checkErrorApi(err));
                         }
                     );
             });
@@ -53,8 +52,7 @@ export class MangaService {
                             resolve(response.data);
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
-                            resolve(false);
+                            resolve(this.commonService.checkErrorApi(err));
                         }
                     );
             });
@@ -74,8 +72,7 @@ export class MangaService {
                             resolve(true);
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
-                            resolve(false);
+                            resolve(this.commonService.checkErrorApi(err));
                         }
                     );
             });
@@ -98,8 +95,7 @@ export class MangaService {
                             }
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
-                            resolve(false);
+                            resolve(this.commonService.checkErrorApi(err));
                         }
                     );
             });
@@ -122,8 +118,7 @@ export class MangaService {
                             }
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
-                            resolve(false);
+                            resolve(this.commonService.checkErrorApi(err));
                         }
                     );
             });
@@ -142,8 +137,7 @@ export class MangaService {
                             resolve(response.data);
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
-                            resolve(null);
+                            resolve(this.commonService.checkErrorApi(err));
                         }
                     );
             });
@@ -162,8 +156,7 @@ export class MangaService {
                             resolve(true);
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
-                            resolve(false);
+                            resolve(this.commonService.checkErrorApi(err));
                         }
                     );
             });
@@ -182,8 +175,7 @@ export class MangaService {
                             resolve(response.data);
                         },
                         err => {
-                            //resolve(this.commonService.errorApiReturn(err));
-                            resolve(false);
+                            resolve(this.commonService.checkErrorApi(err));
                         }
                     );
             });
