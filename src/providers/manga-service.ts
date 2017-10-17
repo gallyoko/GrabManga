@@ -8,10 +8,11 @@ export class MangaService {
     private routeGetMangaByTitleBegin: any = '/mangas/search/begin';
     private routeGetMangaInfo: any = '/manga/info';
     private routeGenerateManga: any = '/generate/manga';
-    private routeGetCurrentDowload: any = '/download/user/current';
-    private routeGetWaitingDowloads: any = '/downloads/user/waiting';
-    private routeGetFinishedDowloads: any = '/downloads/user/finished';
-    private routeRemoveDowload: any = '/download/remove';
+    private routeGetCurrentDownload: any = '/download/user/current';
+    private routeGetWaitingDownloads: any = '/downloads/user/waiting';
+    private routeGetFinishedDownloads: any = '/downloads/user/finished';
+    private routeRemoveDownload: any = '/download/remove';
+    private routeArchiveDownload: any = '/archive/download';
 
     constructor(public http: Http, public commonService: CommonService) {
         
@@ -83,7 +84,7 @@ export class MangaService {
     getCurrentDownload() {
         return new Promise(resolve => {
             this.commonService.getToken().then(token => {
-                let route = this.routeGetCurrentDowload+'/'+token;
+                let route = this.routeGetCurrentDownload+'/'+token;
                 this.http.get(this.commonService.getUrlApi()+route)
                     .map(res => res.json())
                     .subscribe(
@@ -107,7 +108,7 @@ export class MangaService {
     getWaitingDownloads() {
         return new Promise(resolve => {
             this.commonService.getToken().then(token => {
-                let route = this.routeGetWaitingDowloads+'/'+token;
+                let route = this.routeGetWaitingDownloads+'/'+token;
                 this.http.get(this.commonService.getUrlApi()+route)
                     .map(res => res.json())
                     .subscribe(
@@ -131,7 +132,7 @@ export class MangaService {
     getFinishedDownloads() {
         return new Promise(resolve => {
             this.commonService.getToken().then(token => {
-                let route = this.routeGetFinishedDowloads+'/'+token;
+                let route = this.routeGetFinishedDownloads+'/'+token;
                 this.http.get(this.commonService.getUrlApi()+route)
                     .map(res => res.json())
                     .subscribe(
@@ -151,7 +152,7 @@ export class MangaService {
     removeDownload(id) {
         return new Promise(resolve => {
             this.commonService.getToken().then(token => {
-                let route = this.routeRemoveDowload+'/'+token+'/'+id;
+                let route = this.routeRemoveDownload+'/'+token+'/'+id;
                 this.http.delete(this.commonService.getUrlApi()+route)
                     .map(res => res.json())
                     .subscribe(
@@ -164,6 +165,16 @@ export class MangaService {
                             resolve(false);
                         }
                     );
+            });
+        });
+    }
+
+    getUrlArchiveDownload(id) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route:string = this.routeArchiveDownload+'/'+token+'/'+id;
+                let url:string = this.commonService.getUrlApi()+route;
+                resolve(url);
             });
         });
     }

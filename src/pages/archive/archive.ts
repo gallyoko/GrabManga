@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { MangaService } from '../../providers/manga-service';
+import { File } from '@ionic-native/file';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 
 @Component({
     selector: 'page-archive',
@@ -13,7 +15,8 @@ export class ArchivePage {
     private archives:any = [];
 
     constructor(public navCtrl: NavController,
-              public commonService: CommonService, public mangaService: MangaService) {
+              public commonService: CommonService, public mangaService: MangaService,
+                private transfer: FileTransfer, private file: File) {
 
     }
 
@@ -40,7 +43,14 @@ export class ArchivePage {
     }
 
     download(archive) {
-        console.log('download id='+archive.id);
+        this.mangaService.getUrlArchiveDownload(archive.id).then(url => {
+            let fileTransfer: FileTransferObject = this.transfer.create();
+            fileTransfer.download(url.toString(), this.file.externalRootDirectory + '/Download/' + 'file.zip').then((entry) => {
+                this.commonService.toastShow('Le fichier téléchargé a été déposé sous '+ entry.toURL());
+            }, (error) => {
+                this.commonService.toastShow('Erreur : impossible de télécharger le fichier');
+            });
+        });
     }
 
 }
