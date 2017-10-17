@@ -16,10 +16,12 @@ import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Toast } from '@ionic-native/toast';
+import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 
 @NgModule({
   declarations: [
-    MyApp,
+      MyApp,
       LoginPage,
       HomePage,
       MangaPage,
@@ -45,9 +47,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
       ArchivePage
   ],
   providers: [
-    StatusBar,
-    SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+      StatusBar,
+      SplashScreen,
+      Toast,
+      SpinnerDialog,
+      {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
 export class AppModule {}
