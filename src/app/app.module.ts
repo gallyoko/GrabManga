@@ -20,6 +20,7 @@ import { Toast } from '@ionic-native/toast';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { File } from '@ionic-native/file';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
+import { LocalNotifications } from '@ionic-native/local-notifications';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
       File,
       FileTransfer,
       FileTransferObject,
+      LocalNotifications,
       {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
