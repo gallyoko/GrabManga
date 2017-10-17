@@ -43,14 +43,24 @@ export class ArchivePage {
     }
 
     download(archive) {
-        this.mangaService.getUrlArchiveDownload(archive.id).then(url => {
-            let fileTransfer: FileTransferObject = this.transfer.create();
-            fileTransfer.download(url.toString(), this.file.externalRootDirectory + '/Download/' + 'file.zip').then((entry) => {
-                this.commonService.toastShow('Le fichier téléchargé a été déposé sous '+ entry.toURL());
-            }, (error) => {
-                this.commonService.toastShow('Erreur : impossible de télécharger le fichier');
-            });
+        this.commonService.loadingShow('Please wait...');
+        this.mangaService.getNameArchiveDownload(archive.id).then(data => {
+            if (!data) {
+                this.commonService.toastShow('Impossible de récupérer le nom du fichier à télécharger');
+            } else {
+                let filename = data['name']
+                this.mangaService.getUrlArchiveDownload(archive.id).then(url => {
+                    let fileTransfer: FileTransferObject = this.transfer.create();
+                    fileTransfer.download(url.toString(), this.file.externalRootDirectory + '/Download/' + filename).then((entry) => {
+                        this.commonService.toastShow('Le fichier téléchargé a été déposé sous '+ entry.toURL());
+                    }, (error) => {
+                        this.commonService.toastShow('Erreur : impossible de télécharger le fichier');
+                    });
+                });
+            }
+            this.commonService.loadingHide();
         });
+
     }
 
 }

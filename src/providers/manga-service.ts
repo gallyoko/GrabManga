@@ -12,6 +12,7 @@ export class MangaService {
     private routeGetWaitingDownloads: any = '/downloads/user/waiting';
     private routeGetFinishedDownloads: any = '/downloads/user/finished';
     private routeRemoveDownload: any = '/download/remove';
+    private routeArchiveName: any = '/archive/name';
     private routeArchiveDownload: any = '/archive/download';
 
     constructor(public http: Http, public commonService: CommonService) {
@@ -159,6 +160,26 @@ export class MangaService {
                         response => {
                             this.commonService.setToken(response.token);
                             resolve(true);
+                        },
+                        err => {
+                            //resolve(this.commonService.errorApiReturn(err));
+                            resolve(false);
+                        }
+                    );
+            });
+        });
+    }
+
+    getNameArchiveDownload(id) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeArchiveName+'/'+token+'/'+id;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(response.data);
                         },
                         err => {
                             //resolve(this.commonService.errorApiReturn(err));
