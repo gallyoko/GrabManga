@@ -24,7 +24,7 @@ else
         ionic cordova platform add android >> log/build.log
     fi
 
-    ionic cordova build --release >> log/build.log
+    ionic cordova build android --release >> log/build.log
 
     cd ${path_commands}/../platforms/android/build/outputs/apk
 
