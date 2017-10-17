@@ -21,10 +21,10 @@ else
 
     if [ ! -d platforms/android ]
     then
-        cordova platform add android >> log/build.log
+        ionic cordova platform add android >> log/build.log
     fi
 
-    cordova build --release >> log/build.log
+    ionic cordova build --release >> log/build.log
 
     cd ${path_commands}/../platforms/android/build/outputs/apk
 
