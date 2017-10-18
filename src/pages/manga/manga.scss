@@ -1,12 +1,15 @@
 page-manga {
-  .searchList {
-    height:100%;
-    > ion-item {
-      width: 45px;
-      height: 40px;
-      > .item-inner {
-        width: 45px;
-      }
-    }
+  .scrollContent {
+    height: 60px;
+    width: 100%;
+  }
+
+  .scrollSearch{
+    width: 900px;
+  }
+
+  .scrollItem {
+    height: 30px;
+    width: 30px;
   }
 }
