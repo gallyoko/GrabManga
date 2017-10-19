@@ -9,6 +9,7 @@ import { LoginPage } from '../pages/login/index';
 import { HomePage } from '../pages/home/home';
 import { MangaPage } from '../pages/manga/manga';
 import { MangaInfoPage } from '../pages/manga/manga.info';
+import { MangaDownloadPage } from '../pages/manga/manga.download';
 import { DownloadPage } from '../pages/download/download';
 import { ArchivePage } from '../pages/archive/archive';
 
@@ -29,6 +30,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
       HomePage,
       MangaPage,
       MangaInfoPage,
+      MangaDownloadPage,
       DownloadPage,
       ArchivePage,
       ProgressBarComponent
@@ -46,6 +48,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
       HomePage,
       MangaPage,
       MangaInfoPage,
+      MangaDownloadPage,
       DownloadPage,
       ArchivePage
   ],

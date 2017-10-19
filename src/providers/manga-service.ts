@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class MangaService {
     private routeGetMangaByTitleBegin: any = '/mangas/search/begin';
+    private routeGetMangaByTitleContent: any = '/mangas/search';
     private routeGetMangaInfo: any = '/manga/info';
     private routeGenerateManga: any = '/generate/manga';
     private routeGetCurrentDownload: any = '/download/user/current';
@@ -23,6 +24,27 @@ export class MangaService {
         return new Promise(resolve => {
             this.commonService.getToken().then(token => {
                 let route = this.routeGetMangaByTitleBegin+'/'+token+'/'+word;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(response.data);
+                        },
+                        err => {
+                            resolve(this.commonService.checkErrorApi(err));
+                        }
+                    );
+            });
+
+        });
+
+    }
+
+    getMangasContent(word) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGetMangaByTitleContent+'/'+token+'/'+word;
                 this.http.get(this.commonService.getUrlApi()+route)
                     .map(res => res.json())
                     .subscribe(

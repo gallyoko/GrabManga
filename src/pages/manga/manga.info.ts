@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { NavController, ModalController, NavParams } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { MangaService } from '../../providers/manga-service';
 import { SecurityService } from '../../providers/security-service';
+import { MangaDownloadPage } from './manga.download';
 import { LoginPage } from '../login/index';
 
 @Component({
@@ -13,11 +14,11 @@ import { LoginPage } from '../login/index';
 export class MangaInfoPage {
 
     private manga:any = {};
-    private mangaId:any;
+    private mangaId:any = 0;
 
-    constructor(private navCtrl: NavController, public params: NavParams,
-                public viewCtrl: ViewController, public commonService: CommonService,
-                public mangaService: MangaService, private securityService: SecurityService) {
+    constructor(private navCtrl: NavController, public modalCtrl: ModalController,
+                public params: NavParams, private securityService: SecurityService,
+                public commonService: CommonService, public mangaService: MangaService) {
         this.mangaId = this.params.get('mangaId');
         this.showMangaInfo();
     }
@@ -38,19 +39,13 @@ export class MangaInfoPage {
         });
     }
 
-    dismiss() {
-        this.viewCtrl.dismiss();
+    openModal() {
+        let modal = this.modalCtrl.create(MangaDownloadPage, {'manga': this.manga});
+        modal.present();
     }
 
-    download() {
-        this.commonService.loadingShow('Please wait...');
-        this.mangaService.generateManga(this.mangaId).then(generate => {
-            if (generate) {
-                this.commonService.toastShow('Le manga a été ajouté aux téléchargements');
-            } else {
-                this.commonService.toastShow("Erreur lors de l'ajout du manga aux téléchargements");
-            }
-            this.commonService.loadingHide();
-        });
+    closeInfo() {
+        this.navCtrl.pop();
     }
+
 }

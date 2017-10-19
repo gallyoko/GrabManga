@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, ModalController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { MangaService } from '../../providers/manga-service';
 import { MangaInfoPage } from './manga.info';
@@ -16,7 +16,7 @@ export class MangaPage {
     private paginatorAlpha:any = [];
     private mangas:any = [];
 
-    constructor(public navCtrl: NavController, public modalCtrl: ModalController,
+    constructor(public navCtrl: NavController,
                 public commonService: CommonService, public mangaService: MangaService,
                 private securityService: SecurityService) {
         this.paginatorAlpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'
@@ -41,9 +41,23 @@ export class MangaPage {
         });
     }
 
-    openModal(mangaId) {
-        let modal = this.modalCtrl.create(MangaInfoPage, {'mangaId': mangaId});
-        modal.present();
+    getMangasContent(event) {
+        let val = event.target.value;
+        if (val && val.trim() != '' && val.length > 2) {
+            this.mangaService.getMangasContent(val.trim()).then(mangas => {
+                if (mangas) {
+                    this.mangas = mangas;
+                }
+            });
+        } else {
+            this.mangas = [];
+        }
     }
+
+    showInfo(mangaId) {
+        this.navCtrl.push(MangaInfoPage, {'mangaId': mangaId});
+    }
+
+
 
 }
