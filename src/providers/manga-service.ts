@@ -8,7 +8,12 @@ export class MangaService {
     private routeGetMangaByTitleBegin: any = '/mangas/search/begin';
     private routeGetMangaByTitleContent: any = '/mangas/search';
     private routeGetMangaInfo: any = '/manga/info';
+    private routeGetTomesByManga: any = '/tomes/manga';
+    private routeGetChaptersByManga: any = '/chapters/manga';
+    private routeGetChaptersByTome: any = '/chapters/tome';
     private routeGenerateManga: any = '/generate/manga';
+    private routeGenerateTome: any = '/generate/tome';
+    private routeGenerateChapter: any = '/generate/chapter';
     private routeGetCurrentDownload: any = '/download/user/current';
     private routeGetWaitingDownloads: any = '/downloads/user/waiting';
     private routeGetFinishedDownloads: any = '/downloads/user/finished';
@@ -82,10 +87,108 @@ export class MangaService {
         });
     }
 
+    getTomesByManga(mangaId) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGetTomesByManga+'/'+token+'/'+mangaId;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(response.data);
+                        },
+                        err => {
+                            resolve(this.commonService.checkErrorApi(err));
+                        }
+                    );
+            });
+
+        });
+    }
+
+    getChaptersByManga(mangaId) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGetChaptersByManga+'/'+token+'/'+mangaId;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(response.data);
+                        },
+                        err => {
+                            resolve(this.commonService.checkErrorApi(err));
+                        }
+                    );
+            });
+
+        });
+    }
+
+    getChaptersByTome(tomeId) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGetChaptersByTome+'/'+token+'/'+tomeId;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(response.data);
+                        },
+                        err => {
+                            resolve(this.commonService.checkErrorApi(err));
+                        }
+                    );
+            });
+
+        });
+    }
+
     generateManga(mangaId) {
         return new Promise(resolve => {
             this.commonService.getToken().then(token => {
                 let route = this.routeGenerateManga+'/'+token+'/'+mangaId;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(true);
+                        },
+                        err => {
+                            resolve(this.commonService.checkErrorApi(err));
+                        }
+                    );
+            });
+        });
+    }
+
+    generateTome(tomeId) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGenerateTome+'/'+token+'/'+tomeId;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(true);
+                        },
+                        err => {
+                            resolve(this.commonService.checkErrorApi(err));
+                        }
+                    );
+            });
+        });
+    }
+
+    generateChapter(chapterId) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGenerateChapter+'/'+token+'/'+chapterId;
                 this.http.get(this.commonService.getUrlApi()+route)
                     .map(res => res.json())
                     .subscribe(

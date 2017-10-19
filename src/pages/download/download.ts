@@ -40,6 +40,8 @@ export class DownloadPage {
         this.mangaService.getWaitingDownloads().then(downloads => {
             if (downloads !== false) {
                 this.downloads = downloads;
+            } else {
+                this.downloads = [];
             }
         });
     }

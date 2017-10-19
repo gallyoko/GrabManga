@@ -11,7 +11,7 @@
   <ion-list>
     <ion-item *ngFor="let download of downloads">
       <h2>{{download.title}}</h2>
-      <h3>{{download.manga.title}}</h3>
+      <h3>{{download.mangaTitle}}</h3>
       <p>
         <progress-bar [progress]="download.progress"></progress-bar>
       </p>

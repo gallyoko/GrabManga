@@ -19,7 +19,7 @@
         <ion-row>
           <ion-col col-9>Livre complet</ion-col>
           <ion-col col-3>
-            <button ion-button (click)="download()">
+            <button ion-button (click)="downloadManga()">
               <ion-icon name="cloud-download"></ion-icon>
             </button>
           </ion-col>
@@ -28,14 +28,8 @@
     </ion-item>
     <ion-item>
       <ion-label>Tome</ion-label>
-      <ion-select [(ngModel)]="os" submitText="Okay" cancelText="Nah">
-        <ion-option value="dos">DOS</ion-option>
-        <ion-option value="lunix">Linux</ion-option>
-        <ion-option value="mac7">Mac OS 7</ion-option>
-        <ion-option value="mac8">Mac OS 8</ion-option>
-        <ion-option value="win3.1">Windows 3.1</ion-option>
-        <ion-option value="win95">Windows 95</ion-option>
-        <ion-option value="win98">Windows 98</ion-option>
+      <ion-select [(ngModel)]="tomeId" submitText="Ok" cancelText="Cancel" (ngModelChange)="loadChapters()">
+        <ion-option *ngFor="let tome of tomes" value="{{tome.id}}">{{tome.title}}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
@@ -43,7 +37,25 @@
         <ion-row>
           <ion-col col-9>Télécharger le tome</ion-col>
           <ion-col col-3>
-            <button ion-button (click)="download()">
+            <button ion-button (click)="downloadTome()">
+              <ion-icon name="cloud-download"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item>
+      <ion-label>Chapitre</ion-label>
+      <ion-select [(ngModel)]="chapterId" submitText="Ok" cancelText="Cancel">
+        <ion-option *ngFor="let chapter of chapters" value="{{chapter.id}}">{{chapter.title}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-9>Télécharger le chapitre</ion-col>
+          <ion-col col-3>
+            <button ion-button (click)="downloadChapter()">
               <ion-icon name="cloud-download"></ion-icon>
             </button>
           </ion-col>
