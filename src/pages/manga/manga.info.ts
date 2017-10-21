@@ -23,7 +23,7 @@ export class MangaInfoPage {
         this.showMangaInfo();
     }
 
-    ionViewDidLoad () {
+    ionViewDidEnter () {
         this.securityService.checkAuth().then(auth => {
             if (!auth) {
                 this.navCtrl.setRoot(LoginPage);

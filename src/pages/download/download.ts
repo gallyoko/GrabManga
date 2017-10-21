@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Rx';
 })
 export class DownloadPage {
 
+    private noDownload:any = true;
     private subscription:any = 0;
     private downloads:any = [];
 
@@ -20,7 +21,7 @@ export class DownloadPage {
                 public mangaService: MangaService, private securityService: SecurityService) {
     }
 
-    ionViewDidLoad () {
+    ionViewDidEnter () {
         this.securityService.checkAuth().then(auth => {
             if (!auth) {
                 this.navCtrl.setRoot(LoginPage);
@@ -39,8 +40,10 @@ export class DownloadPage {
     loadProgress() {
         this.mangaService.getWaitingDownloads().then(downloads => {
             if (downloads !== false) {
+                this.noDownload = false;
                 this.downloads = downloads;
             } else {
+                this.noDownload = true;
                 this.downloads = [];
             }
         });

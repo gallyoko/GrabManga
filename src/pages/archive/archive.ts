@@ -18,6 +18,7 @@ export class ArchivePage {
 
     private isCurrentArchiveDownload:any = false;
     private currentArchiveIdDownload:any = 0;
+    private noArchive:any = true;
     private archives:any = [];
     private fileTransfer:FileTransferObject = null;
     private subscription:any = 0;
@@ -31,7 +32,7 @@ export class ArchivePage {
                 private securityService: SecurityService) {
     }
 
-    ionViewDidLoad () {
+    ionViewDidEnter () {
         this.securityService.checkAuth().then(auth => {
             if (!auth) {
                 this.navCtrl.setRoot(LoginPage);
@@ -52,6 +53,11 @@ export class ArchivePage {
     showArchives() {
         this.mangaService.getFinishedDownloads().then(archives => {
             this.archives = archives;
+            if (this.archives.length > 0 ) {
+                this.noArchive = false;
+            } else {
+                this.noArchive = true;
+            }
             this.commonService.loadingHide();
         });
     }

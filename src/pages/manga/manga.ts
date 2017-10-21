@@ -23,7 +23,7 @@ export class MangaPage {
             , 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
     }
 
-    ionViewDidLoad () {
+    ionViewDidEnter () {
         this.securityService.checkAuth().then(auth => {
             if (!auth) {
                 this.navCtrl.setRoot(LoginPage);

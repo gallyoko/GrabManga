@@ -16,5 +16,10 @@
         <progress-bar [progress]="download.progress"></progress-bar>
       </p>
     </ion-item>
+    <ion-item *ngIf="noDownload">
+      <p>
+        Aucun fichier en cours de génération.
+      </p>
+    </ion-item>
   </ion-list>
 </ion-content>

@@ -24,7 +24,7 @@ export class MangaDownloadPage {
         this.manga = this.params.get('manga');
     }
 
-    ionViewDidLoad () {
+    ionViewDidEnter () {
         this.securityService.checkAuth().then(auth => {
             if (!auth) {
                 this.navCtrl.setRoot(LoginPage);
