@@ -16,7 +16,8 @@ import { Observable } from 'rxjs/Rx';
 })
 export class ArchivePage {
 
-    private currentArchiveDownload:any = false;
+    private isCurrentArchiveDownload:any = false;
+    private currentArchiveIdDownload:any = 0;
     private archives:any = [];
     private fileTransfer:FileTransferObject = null;
     private subscription:any = 0;
@@ -56,7 +57,7 @@ export class ArchivePage {
     }
 
     remove(archive) {
-        if (this.currentArchiveDownload) {
+        if (this.isCurrentArchiveDownload) {
             this.commonService.toastShow("Impossible de supprimer l'archive pendant son téléchargement");
         } else {
             this.commonService.loadingShow('Please wait...');
@@ -80,9 +81,10 @@ export class ArchivePage {
                 this.filesize = data['size'];
                 this.mangaService.getUrlArchiveDownload(archive.id).then(url => {
                     if(this.fileTransfer==null) {
-                        this.fileTransfer = this.transfer.create();
                         this.inProgress = true;
-                        this.currentArchiveDownload = true;
+                        this.isCurrentArchiveDownload = true;
+                        this.currentArchiveIdDownload = archive.id;
+                        this.fileTransfer = this.transfer.create();
                         this.fileTransfer.download(url.toString(), this.file.externalRootDirectory + '/Download/' + filename).then((entry) => {
                             this.localNotifications.schedule({
                                 id: 1,
@@ -92,7 +94,8 @@ export class ArchivePage {
                             this.filesize = 0;
                             this.inProgress = false;
                             this.fileTransfer = null;
-                            this.currentArchiveDownload = false;
+                            this.isCurrentArchiveDownload = false;
+                            this.currentArchiveIdDownload = 0;
                         }, (error) => {
                             this.commonService.toastShow('Erreur : impossible de télécharger le fichier');
                         });

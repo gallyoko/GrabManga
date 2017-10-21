@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class CommonService {
   private login: string = 'GrabManga';
-  private urlApi: string = 'http://192.168.1.17:8000';
+  private urlApi: string = 'http://83.157.150.119:8000';
   private loader: any = null;
 
   constructor(public app: App, public navCtrl: NavController, public http: Http, public storage: Storage, public platform: Platform,

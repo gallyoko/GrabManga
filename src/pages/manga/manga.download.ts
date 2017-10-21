@@ -63,9 +63,9 @@ export class MangaDownloadPage {
         this.commonService.loadingShow('Please wait...');
         this.mangaService.generateManga(this.manga.id).then(generate => {
             if (generate) {
-                this.commonService.toastShow('Le manga a été ajouté aux téléchargements');
+                this.commonService.toastShow('La demande de génération du manga a été ajoutée');
             } else {
-                this.commonService.toastShow("Erreur lors de l'ajout du manga aux téléchargements");
+                this.commonService.toastShow("Erreur lors de la demande de génération du manga");
             }
             this.commonService.loadingHide();
         });
@@ -76,9 +76,9 @@ export class MangaDownloadPage {
             this.commonService.loadingShow('Please wait...');
             this.mangaService.generateTome(this.tomeId).then(generate => {
                 if (generate) {
-                    this.commonService.toastShow('Le tome a été ajouté aux téléchargements');
+                    this.commonService.toastShow('La demande de génération du tome a été ajoutée');
                 } else {
-                    this.commonService.toastShow("Erreur lors de l'ajout du tome aux téléchargements");
+                    this.commonService.toastShow("Erreur lors de la demande de génération du tome");
                 }
                 this.commonService.loadingHide();
             });
@@ -92,9 +92,9 @@ export class MangaDownloadPage {
             this.commonService.loadingShow('Please wait...');
             this.mangaService.generateChapter(this.chapterId).then(generate => {
                 if (generate) {
-                    this.commonService.toastShow('Le chapitre a été ajouté aux téléchargements');
+                    this.commonService.toastShow('La demande de génération du chapitre a été ajoutée');
                 } else {
-                    this.commonService.toastShow("Erreur lors de l'ajout du chapitre aux téléchargements");
+                    this.commonService.toastShow("Erreur lors de la demande de génération du chapitre");
                 }
                 this.commonService.loadingHide();
             });
