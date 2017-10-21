@@ -63,7 +63,7 @@ export class MangaDownloadPage {
         this.commonService.loadingShow('Please wait...');
         this.mangaService.generateManga(this.manga.id).then(generate => {
             if (generate) {
-                this.commonService.toastShow('La demande de génération du manga a été ajoutée');
+                this.commonService.toastShow('La demande de génération du manga a été effectuée');
             } else {
                 this.commonService.toastShow("Erreur lors de la demande de génération du manga");
             }
@@ -76,7 +76,7 @@ export class MangaDownloadPage {
             this.commonService.loadingShow('Please wait...');
             this.mangaService.generateTome(this.tomeId).then(generate => {
                 if (generate) {
-                    this.commonService.toastShow('La demande de génération du tome a été ajoutée');
+                    this.commonService.toastShow('La demande de génération du tome a été effectuée');
                 } else {
                     this.commonService.toastShow("Erreur lors de la demande de génération du tome");
                 }
@@ -92,7 +92,7 @@ export class MangaDownloadPage {
             this.commonService.loadingShow('Please wait...');
             this.mangaService.generateChapter(this.chapterId).then(generate => {
                 if (generate) {
-                    this.commonService.toastShow('La demande de génération du chapitre a été ajoutée');
+                    this.commonService.toastShow('La demande de génération du chapitre a été effectuée');
                 } else {
                     this.commonService.toastShow("Erreur lors de la demande de génération du chapitre");
                 }
