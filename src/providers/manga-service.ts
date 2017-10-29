@@ -20,6 +20,9 @@ export class MangaService {
     private routeRemoveDownload: any = '/download/remove';
     private routeArchiveName: any = '/archive/name';
     private routeArchiveDownload: any = '/archive/download';
+    private routeAddFavorite: any = '/favorite';
+    private routeGetFavorites: any = '/favorites';
+    private routeRemoveFavorite: any = '/favorite/remove';
 
     constructor(public http: Http, public commonService: CommonService) {
         
@@ -313,6 +316,69 @@ export class MangaService {
                 let route:string = this.routeArchiveDownload+'/'+token+'/'+id;
                 let url:string = this.commonService.getUrlApi()+route;
                 resolve(url);
+            });
+        });
+    }
+
+    addFavorite(mangaId) {
+        return new Promise(resolve => {
+            let request: any = {
+                "mangaId":mangaId
+            };
+            let param:any = JSON.stringify(request);
+            this.commonService.getToken().then(token => {
+                this.http.post(this.commonService.getUrlApi()+this.routeAddFavorite+'/'+token, param)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(true);
+                        },
+                        err => {
+                            resolve(false);
+                        }
+                    );
+            });
+        });
+    }
+
+    getFavorites() {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeGetFavorites+'/'+token;
+                this.http.get(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(response.data);
+                        },
+                        err => {
+                            let data = []
+                            resolve(data);
+                        }
+                    );
+            });
+
+        });
+    }
+
+    removeFavorite(id) {
+        return new Promise(resolve => {
+            this.commonService.getToken().then(token => {
+                let route = this.routeRemoveFavorite+'/'+token+'/'+id;
+                console.log(this.commonService.getUrlApi()+route);
+                this.http.delete(this.commonService.getUrlApi()+route)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            resolve(true);
+                        },
+                        err => {
+                            resolve(false);
+                        }
+                    );
             });
         });
     }

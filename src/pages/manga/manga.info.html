@@ -6,6 +6,11 @@
         <ion-icon name="ios-arrow-back-outline" showWhen="android,windows"></ion-icon>
       </button>
     </ion-buttons>
+    <ion-buttons right>
+      <button ion-button (click)="addToFavorite()">
+        <ion-icon name="md-star" class="navicon"></ion-icon>
+      </button>
+    </ion-buttons>
     <ion-title>
       {{manga.title}}
     </ion-title>

@@ -9,22 +9,13 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item *ngFor="let archive of archives">
+    <ion-item *ngFor="let archive of archives" (click)="openMenu(archive)">
       <ion-grid>
         <ion-row>
-          <ion-col col-8>
+          <ion-col col-12>
             <h2>{{archive.title}}</h2>
             <h3>{{archive.mangaTitle}}</h3>
-          </ion-col>
-          <ion-col col-2>
-            <button ion-button (click)="remove(archive)">
-              <ion-icon name="trash"></ion-icon>
-            </button>
-          </ion-col>
-          <ion-col col-2>
-            <button ion-button (click)="download(archive)">
-              <ion-icon name="download"></ion-icon>
-            </button>
+            <h4>{{archive.size}}</h4>
           </ion-col>
         </ion-row>
         <ion-row>

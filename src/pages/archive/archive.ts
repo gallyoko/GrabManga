@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ActionSheetController } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { MangaService } from '../../providers/manga-service';
 import { SecurityService } from '../../providers/security-service';
@@ -29,7 +29,7 @@ export class ArchivePage {
     constructor(public navCtrl: NavController, public commonService: CommonService,
                 public mangaService: MangaService, private transfer: FileTransfer,
                 private file: File, private localNotifications: LocalNotifications,
-                private securityService: SecurityService) {
+                private actionsheetCtrl: ActionSheetController, private securityService: SecurityService) {
     }
 
     ionViewDidEnter () {
@@ -60,6 +60,39 @@ export class ArchivePage {
             }
             this.commonService.loadingHide();
         });
+    }
+
+    openMenu(archive) {
+        let actionSheet = this.actionsheetCtrl.create({
+            title: archive.title,
+            cssClass: 'action-sheets-basic-page',
+            buttons: [
+                {
+                    text: 'Delete',
+                    role: 'destructive',
+                    icon: 'trash',
+                    handler: () => {
+                        this.remove(archive);
+                    }
+                },
+                {
+                    text: 'Download',
+                    icon: 'download',
+                    handler: () => {
+                        this.download(archive);
+                    }
+                },
+                {
+                    text: 'Cancel',
+                    role: 'cancel',
+                    icon: 'close',
+                    handler: () => {
+                        //console.log('Cancel clicked  ' + archive.id);
+                    }
+                }
+            ]
+        });
+        actionSheet.present();
     }
 
     remove(archive) {

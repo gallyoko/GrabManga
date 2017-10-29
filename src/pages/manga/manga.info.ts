@@ -39,6 +39,20 @@ export class MangaInfoPage {
         });
     }
 
+    addToFavorite() {
+        this.commonService.loadingShow('Please wait...');
+        this.mangaService.addFavorite(this.mangaId).then(isAdd => {
+            let msg = '';
+            if (isAdd) {
+                msg = ' a été ajouté aux favoris.';
+            } else {
+                msg = ' fait déjà parti de vos favoris.';
+            }
+            this.commonService.loadingHide();
+            this.commonService.toastShow(this.manga['title'] + msg);
+        });
+    }
+
     openModal() {
         let modal = this.modalCtrl.create(MangaDownloadPage, {'manga': this.manga});
         modal.present();

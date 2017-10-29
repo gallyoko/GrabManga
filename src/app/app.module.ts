@@ -8,6 +8,7 @@ import { MyApp } from './app.component';
 import { LoginPage } from '../pages/login/index';
 import { HomePage } from '../pages/home/home';
 import { MangaPage } from '../pages/manga/manga';
+import { FavoritePage } from '../pages/favorite/favorite';
 import { MangaInfoPage } from '../pages/manga/manga.info';
 import { MangaDownloadPage } from '../pages/manga/manga.download';
 import { DownloadPage } from '../pages/download/download';
@@ -29,6 +30,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
       LoginPage,
       HomePage,
       MangaPage,
+      FavoritePage,
       MangaInfoPage,
       MangaDownloadPage,
       DownloadPage,
@@ -47,6 +49,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
       LoginPage,
       HomePage,
       MangaPage,
+      FavoritePage,
       MangaInfoPage,
       MangaDownloadPage,
       DownloadPage,
