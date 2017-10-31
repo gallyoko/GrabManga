@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, ActionSheetController } from 'ionic-angular';
+import { NavController, ActionSheetController, AlertController } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { MangaService } from '../../providers/manga-service';
 import { SecurityService } from '../../providers/security-service';
@@ -29,7 +29,8 @@ export class ArchivePage {
     constructor(public navCtrl: NavController, public commonService: CommonService,
                 public mangaService: MangaService, private transfer: FileTransfer,
                 private file: File, private localNotifications: LocalNotifications,
-                private actionsheetCtrl: ActionSheetController, private securityService: SecurityService) {
+                private actionsheetCtrl: ActionSheetController, private alertCtrl: AlertController,
+                private securityService: SecurityService) {
     }
 
     ionViewDidEnter () {
@@ -67,19 +68,19 @@ export class ArchivePage {
             title: archive.title,
             cssClass: 'action-sheets-basic-page',
             buttons: [
+                                {
+                    text: 'Download',
+                    icon: 'download',
+                    handler: () => {
+                        this.download(archive);
+                    }
+                },
                 {
                     text: 'Delete',
                     role: 'destructive',
                     icon: 'trash',
                     handler: () => {
-                        this.remove(archive);
-                    }
-                },
-                {
-                    text: 'Download',
-                    icon: 'download',
-                    handler: () => {
-                        this.download(archive);
+                        this.showConfirmDelete(archive);
                     }
                 },
                 {
@@ -93,6 +94,28 @@ export class ArchivePage {
             ]
         });
         actionSheet.present();
+    }
+
+    showConfirmDelete(archive) {
+        let confirm = this.alertCtrl.create({
+            title: 'Suppression',
+            message: 'Confirmez-vous la suppression de "'+archive.title+' - '+archive.mangaTitle+'" des archives ?',
+            buttons: [
+                {
+                    text: 'Oui',
+                    handler: () => {
+                        this.remove(archive);
+                    }
+                },
+                {
+                    text: 'Non',
+                    handler: () => {
+                        //console.log('Non');
+                    }
+                }
+            ]
+        });
+        confirm.present();
     }
 
     remove(archive) {

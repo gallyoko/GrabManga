@@ -1,10 +1,11 @@
+import { NavController, ActionSheetController, ModalController, AlertController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { CommonService } from '../../providers/common-service';
 import { SecurityService } from '../../providers/security-service';
 import { MangaService } from '../../providers/manga-service';
 import { LoginPage } from '../login/index';
 import { MangaDownloadPage } from '../manga/manga.download';
-import { NavController, ActionSheetController, ModalController } from 'ionic-angular';
+import { MangaInfoPage } from '../manga/manga.info';
 
 @Component({
     selector: 'page-favorite',
@@ -16,7 +17,8 @@ export class FavoritePage {
 
     constructor(private navCtrl: NavController, private commonService: CommonService,
                 private securityService: SecurityService, private mangaService: MangaService,
-                private actionsheetCtrl: ActionSheetController, private modalCtrl: ModalController) {
+                private actionsheetCtrl: ActionSheetController, private modalCtrl: ModalController,
+                private alertCtrl: AlertController) {
 
     }
 
@@ -42,15 +44,14 @@ export class FavoritePage {
 
     openMenu(favorite) {
         let actionSheet = this.actionsheetCtrl.create({
-            title: favorite.title,
+            title: favorite.manga.title,
             cssClass: 'action-sheets-basic-page',
             buttons: [
                 {
-                    text: 'Delete',
-                    role: 'destructive',
-                    icon: 'trash',
+                    text: 'Information',
+                    icon: 'md-information-circle',
                     handler: () => {
-                        this.remove(favorite);
+                        this.showInfo(favorite);
                     }
                 },
                 {
@@ -58,6 +59,14 @@ export class FavoritePage {
                     icon: 'download',
                     handler: () => {
                         this.showDownload(favorite);
+                    }
+                },
+                {
+                    text: 'Delete',
+                    role: 'destructive',
+                    icon: 'trash',
+                    handler: () => {
+                        this.showConfirmDelete(favorite);
                     }
                 },
                 {
@@ -86,6 +95,32 @@ export class FavoritePage {
     showDownload(favorite) {
         let modal = this.modalCtrl.create(MangaDownloadPage, {'manga': favorite.manga});
         modal.present();
+    }
+
+    showInfo(favorite) {
+        this.navCtrl.push(MangaInfoPage, {'mangaId': favorite.manga.id});
+    }
+
+    showConfirmDelete(favorite) {
+        let confirm = this.alertCtrl.create({
+            title: 'Suppression',
+            message: 'Confirmez-vous la suppression de "'+favorite.manga.title+'" des favoris ?',
+            buttons: [
+                {
+                    text: 'Oui',
+                    handler: () => {
+                        this.remove(favorite);
+                    }
+                },
+                {
+                    text: 'Non',
+                    handler: () => {
+                        //console.log('Non');
+                    }
+                }
+            ]
+        });
+        confirm.present();
     }
 
 }
