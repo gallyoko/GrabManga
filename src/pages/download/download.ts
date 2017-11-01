@@ -38,8 +38,8 @@ export class DownloadPage {
     }
 
     loadProgress() {
-        this.mangaService.getWaitingDownloads().then(downloads => {
-            if (downloads !== false) {
+        this.mangaService.getWaitingDownloads(false, false).then(downloads => {
+            if (downloads) {
                 this.noDownload = false;
                 this.downloads = downloads;
             } else {

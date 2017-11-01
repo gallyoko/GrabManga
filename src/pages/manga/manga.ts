@@ -32,22 +32,16 @@ export class MangaPage {
     }
 
     getMangasBeginBy(word) {
-        this.commonService.loadingShow('Please wait...');
-        this.mangaService.getMangasBeginBy(word).then(mangas => {
-            if (mangas) {
-                this.mangas = mangas;
-            }
-            this.commonService.loadingHide();
+        this.mangaService.getMangasBeginBy(word, true, true).then(mangas => {
+            this.mangas = mangas;
         });
     }
 
     getMangasContent(event) {
         let val = event.target.value;
         if (val && val.trim() != '' && val.length > 2) {
-            this.mangaService.getMangasContent(val.trim()).then(mangas => {
-                if (mangas) {
-                    this.mangas = mangas;
-                }
+            this.mangaService.getMangasContent(val.trim(), false, true).then(mangas => {
+                this.mangas = mangas;
             });
         } else {
             this.mangas = [];

@@ -27,18 +27,14 @@ export class FavoritePage {
             if (!auth) {
                 this.navCtrl.setRoot(LoginPage);
             } else {
-                this.commonService.loadingShow('Please wait...');
                 this.showFavorites();
             }
         });
     }
 
     showFavorites() {
-        this.mangaService.getFavorites().then(favorites => {
-            if (favorites) {
-                this.favorites = favorites;
-            }
-            this.commonService.loadingHide();
+        this.mangaService.getFavorites(true, true).then(favorites => {
+            this.favorites = favorites;
         });
     }
 
@@ -83,11 +79,7 @@ export class FavoritePage {
     }
 
     remove(favorite) {
-        this.commonService.loadingShow('Please wait...');
-        this.mangaService.removeFavorite(favorite.id).then(remove => {
-            if (!remove) {
-                this.commonService.toastShow("Impossible de supprimer le favori");
-            }
+        this.mangaService.removeFavorite(favorite.id, false, true).then(favorites => {
             this.showFavorites();
         });
     }

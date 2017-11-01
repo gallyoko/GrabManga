@@ -80,20 +80,24 @@ export class CommonService {
     return errorApiReturn;
   }
 
-  checkErrorApi(err) {
-    if (err.status = 500) {
-        let error:any = err;
-        let jsonContent:any = error.json();
+  checkErrorApi(err, showMessage = false) {
+      let error:any = err;
+      let message:any = '';
+      let jsonContent:any = error.json();
+      if (jsonContent.error == undefined) {
+        message = jsonContent.message;
+        this.setErrorMsg(message);
+      } else {
         let exception:any = jsonContent.error.exception;
-        let message:any = exception[0]['message'];
+          message = exception[0]['message'];
         if (message.substring(0, 3) == '401') {
             this.navCtrl.setRoot(LoginPage);
-        } else {
-            return false;
         }
-    } else {
-      return false;
-    }
+        this.setErrorMsg(message);
+      }
+      if (showMessage) {
+        this.toastShow(message);
+      }
   }
 
   setToken(token) {
@@ -102,6 +106,14 @@ export class CommonService {
 
   getToken() {
     return Promise.resolve(this.storage.get('token'));
+  }
+
+  setErrorMsg(errorMsg) {
+    this.storage.set('errorMsg', errorMsg);
+  }
+
+  getErrorMsg() {
+    return Promise.resolve(this.storage.get('errorMsg'));
   }
 
   setProfil(profil) {

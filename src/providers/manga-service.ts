@@ -28,285 +28,115 @@ export class MangaService {
         
     }
 
-    getMangasBeginBy(word) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetMangaByTitleBegin+'/'+token+'/'+word;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(response.data);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
-
-        });
-
-    }
-
-    getMangasContent(word) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetMangaByTitleContent+'/'+token+'/'+word;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(response.data);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
-
-        });
-
-    }
-
-    getMangaInfo(mangaId) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetMangaInfo+'/'+token+'/'+mangaId;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(response.data);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
-
+    getMangasBeginBy(word, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetMangaByTitleBegin+'/'+token+'/'+word;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
-    getTomesByManga(mangaId) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetTomesByManga+'/'+token+'/'+mangaId;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(response.data);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
-
+    getMangasContent(word, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetMangaByTitleContent+'/'+token+'/'+word;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
-    getChaptersByManga(mangaId) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetChaptersByManga+'/'+token+'/'+mangaId;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(response.data);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
-
+    getMangaInfo(mangaId, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetMangaInfo+'/'+token+'/'+mangaId;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
-    getChaptersByTome(tomeId) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetChaptersByTome+'/'+token+'/'+tomeId;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(response.data);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
-
+    getTomesByManga(mangaId, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetTomesByManga+'/'+token+'/'+mangaId;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
-    generateManga(mangaId) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGenerateManga+'/'+token+'/'+mangaId;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(true);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
+    getChaptersByManga(mangaId, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetChaptersByManga+'/'+token+'/'+mangaId;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
-    generateTome(tomeId) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGenerateTome+'/'+token+'/'+tomeId;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(true);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
+    getChaptersByTome(tomeId, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetChaptersByTome+'/'+token+'/'+tomeId;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
-    generateChapter(chapterId) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGenerateChapter+'/'+token+'/'+chapterId;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(true);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
+    generateManga(mangaId, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGenerateManga+'/'+token+'/'+mangaId;
+            return this.execGenericRoute(route, 'get', {},
+                true, showLoading, showToastErrMsg);
         });
     }
 
-    getCurrentDownload() {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetCurrentDownload+'/'+token;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            if (response.data) {
-                                resolve(response.data);
-                            } else {
-                                resolve(false);
-                            }
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
+    generateTome(tomeId, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGenerateTome+'/'+token+'/'+tomeId;
+            return this.execGenericRoute(route, 'get', {},
+                true, showLoading, showToastErrMsg);
         });
     }
 
-    getWaitingDownloads() {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetWaitingDownloads+'/'+token;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            if (response.data) {
-                                resolve(response.data);
-                            } else {
-                                resolve(false);
-                            }
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
+    generateChapter(chapterId, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGenerateChapter+'/'+token+'/'+chapterId;
+            return this.execGenericRoute(route, 'get', {},
+                true, showLoading, showToastErrMsg);
         });
     }
 
-    getFinishedDownloads() {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetFinishedDownloads+'/'+token;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(response.data);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
+    getCurrentDownload(showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetCurrentDownload+'/'+token;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
-    removeDownload(id) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeRemoveDownload+'/'+token+'/'+id;
-                this.http.delete(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(true);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
+    getWaitingDownloads(showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetWaitingDownloads+'/'+token;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
-    getNameArchiveDownload(id) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeArchiveName+'/'+token+'/'+id;
-                this.http.get(this.commonService.getUrlApi()+route)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(response.data);
-                        },
-                        err => {
-                            resolve(this.commonService.checkErrorApi(err));
-                        }
-                    );
-            });
+    getFinishedDownloads(showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetFinishedDownloads+'/'+token;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
+        });
+    }
+
+    removeDownload(id, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeRemoveDownload+'/'+token+'/'+id;
+            return this.execGenericRoute(route, 'delete', {},
+                true, showLoading, showToastErrMsg);
+        });
+    }
+
+    getNameArchiveDownload(id, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeArchiveName+'/'+token+'/'+id;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
         });
     }
 
@@ -320,66 +150,113 @@ export class MangaService {
         });
     }
 
-    addFavorite(mangaId) {
-        return new Promise(resolve => {
-            let request: any = {
+    addFavorite(mangaId, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeAddFavorite+'/'+token;
+            let param: any = {
                 "mangaId":mangaId
             };
-            let param:any = JSON.stringify(request);
-            this.commonService.getToken().then(token => {
-                this.http.post(this.commonService.getUrlApi()+this.routeAddFavorite+'/'+token, param)
-                    .map(res => res.json())
-                    .subscribe(
-                        response => {
-                            this.commonService.setToken(response.token);
-                            resolve(true);
-                        },
-                        err => {
-                            resolve(false);
-                        }
-                    );
-            });
+            return this.execGenericRoute(route, 'post', param,
+                true, showLoading, showToastErrMsg);
         });
     }
 
-    getFavorites() {
+    getFavorites(showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeGetFavorites+'/'+token;
+            return this.execGenericRoute(route, 'get', {},
+                false, showLoading, showToastErrMsg);
+        });
+    }
+
+    removeFavorite(id, showLoading=false, showToastErrMsg=false) {
+        return this.commonService.getToken().then(token => {
+            let route = this.routeRemoveFavorite+'/'+token+'/'+id;
+            return this.execGenericRoute(route, 'delete', {},
+                true, showLoading, showToastErrMsg);
+        });
+    }
+
+    execGenericRoute(route, method, param={}, isBoolReturn=false, showLoading=false, showToastErrMsg=false) {
         return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeGetFavorites+'/'+token;
+            if (showLoading) {
+                this.commonService.loadingShow('Please wait...');
+            }
+            if (method == 'get') {
                 this.http.get(this.commonService.getUrlApi()+route)
                     .map(res => res.json())
                     .subscribe(
                         response => {
                             this.commonService.setToken(response.token);
-                            resolve(response.data);
+                            if (showLoading) {
+                                this.commonService.loadingHide();
+                            }
+                            if(isBoolReturn) {
+                                resolve(true);
+                            } else {
+                                resolve(response.data);
+                            }
                         },
                         err => {
-                            let data = []
-                            resolve(data);
+                            if (showLoading) {
+                                this.commonService.loadingHide();
+                            }
+                            this.commonService.checkErrorApi(err, showToastErrMsg)
+                            resolve(false);
                         }
                     );
-            });
-
-        });
-    }
-
-    removeFavorite(id) {
-        return new Promise(resolve => {
-            this.commonService.getToken().then(token => {
-                let route = this.routeRemoveFavorite+'/'+token+'/'+id;
-                console.log(this.commonService.getUrlApi()+route);
+            } else if (method == 'post') {
+                let request:any = JSON.stringify(param);
+                this.http.post(this.commonService.getUrlApi()+route, request)
+                    .map(res => res.json())
+                    .subscribe(
+                        response => {
+                            this.commonService.setToken(response.token);
+                            if (showLoading) {
+                                this.commonService.loadingHide();
+                            }
+                            if(isBoolReturn) {
+                                resolve(true);
+                            } else {
+                                resolve(response.data);
+                            }
+                        },
+                        err => {
+                            if (showLoading) {
+                                this.commonService.loadingHide();
+                            }
+                            this.commonService.checkErrorApi(err, showToastErrMsg)
+                            resolve(false);
+                        }
+                    );
+            } else if (method == 'delete') {
                 this.http.delete(this.commonService.getUrlApi()+route)
                     .map(res => res.json())
                     .subscribe(
                         response => {
                             this.commonService.setToken(response.token);
-                            resolve(true);
+                            if (showLoading) {
+                                this.commonService.loadingHide();
+                            }
+                            if(isBoolReturn) {
+                                resolve(true);
+                            } else {
+                                resolve(response.data);
+                            }
                         },
                         err => {
+                            if (showLoading) {
+                                this.commonService.loadingHide();
+                            }
+                            this.commonService.checkErrorApi(err, showToastErrMsg)
                             resolve(false);
                         }
                     );
-            });
+            } else if (method == 'put') {
+                //todo
+            }
+
+
         });
     }
 }

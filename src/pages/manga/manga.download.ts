@@ -29,8 +29,7 @@ export class MangaDownloadPage {
             if (!auth) {
                 this.navCtrl.setRoot(LoginPage);
             } else {
-                this.commonService.loadingShow('Please wait...');
-                this.mangaService.getTomesByManga(this.manga.id).then(tomes => {
+                this.mangaService.getTomesByManga(this.manga.id,true, true).then(tomes => {
                     this.tomes = tomes;
                     this.loadChapters();
                 });
@@ -45,42 +44,31 @@ export class MangaDownloadPage {
 
     loadChapters() {
         if (this.tomeId == 0) {
-            this.mangaService.getChaptersByManga(this.manga.id).then(chapters => {
+            this.mangaService.getChaptersByManga(this.manga.id,false, true).then(chapters => {
                 this.chapters = chapters;
-                this.commonService.loadingHide();
             });
         } else {
-            this.commonService.loadingShow('Please wait...');
-            this.mangaService.getChaptersByTome(this.tomeId).then(chapters => {
+            this.mangaService.getChaptersByTome(this.tomeId,false, true).then(chapters => {
                 this.chapters = chapters;
-                this.commonService.loadingHide();
             });
         }
         this.chapterId = 0;
     }
 
     downloadManga() {
-        this.commonService.loadingShow('Please wait...');
-        this.mangaService.generateManga(this.manga.id).then(generate => {
+        this.mangaService.generateManga(this.manga.id,true, true).then(generate => {
             if (generate) {
                 this.commonService.toastShow('La demande de génération du manga a été effectuée');
-            } else {
-                this.commonService.toastShow("Erreur lors de la demande de génération du manga");
             }
-            this.commonService.loadingHide();
         });
     }
 
     downloadTome() {
         if (this.tomeId > 0) {
-            this.commonService.loadingShow('Please wait...');
-            this.mangaService.generateTome(this.tomeId).then(generate => {
+            this.mangaService.generateTome(this.tomeId, true, true).then(generate => {
                 if (generate) {
                     this.commonService.toastShow('La demande de génération du tome a été effectuée');
-                } else {
-                    this.commonService.toastShow("Erreur lors de la demande de génération du tome");
                 }
-                this.commonService.loadingHide();
             });
         } else {
             this.commonService.toastShow('Veuillez sélectionner un tome');
@@ -89,14 +77,10 @@ export class MangaDownloadPage {
 
     downloadChapter() {
         if (this.chapterId > 0) {
-            this.commonService.loadingShow('Please wait...');
-            this.mangaService.generateChapter(this.chapterId).then(generate => {
+            this.mangaService.generateChapter(this.chapterId, true, true).then(generate => {
                 if (generate) {
                     this.commonService.toastShow('La demande de génération du chapitre a été effectuée');
-                } else {
-                    this.commonService.toastShow("Erreur lors de la demande de génération du chapitre");
                 }
-                this.commonService.loadingHide();
             });
         } else {
             this.commonService.toastShow('Veuillez sélectionner un chapitre');

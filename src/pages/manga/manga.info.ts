@@ -32,24 +32,16 @@ export class MangaInfoPage {
     }
 
     showMangaInfo() {
-        this.commonService.loadingShow('Please wait...');
-        this.mangaService.getMangaInfo(this.mangaId).then(manga => {
+        this.mangaService.getMangaInfo(this.mangaId, true, true).then(manga => {
             this.manga = manga;
-            this.commonService.loadingHide();
         });
     }
 
     addToFavorite() {
-        this.commonService.loadingShow('Please wait...');
-        this.mangaService.addFavorite(this.mangaId).then(isAdd => {
-            let msg = '';
+        this.mangaService.addFavorite(this.mangaId, true, true).then(isAdd => {
             if (isAdd) {
-                msg = ' a été ajouté aux favoris.';
-            } else {
-                msg = ' fait déjà parti de vos favoris.';
+                this.commonService.toastShow(this.manga['title'] + ' a été ajouté aux favoris.');
             }
-            this.commonService.loadingHide();
-            this.commonService.toastShow(this.manga['title'] + msg);
         });
     }
 

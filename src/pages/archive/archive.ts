@@ -38,7 +38,6 @@ export class ArchivePage {
             if (!auth) {
                 this.navCtrl.setRoot(LoginPage);
             } else {
-                this.commonService.loadingShow('Please wait...');
                 this.showArchives();
                 this.subscription = Observable.interval(1000).subscribe(x => {
                     this.loadProgress();
@@ -52,14 +51,13 @@ export class ArchivePage {
     }
 
     showArchives() {
-        this.mangaService.getFinishedDownloads().then(archives => {
+        this.mangaService.getFinishedDownloads(true, true).then(archives => {
             this.archives = archives;
             if (this.archives.length > 0 ) {
                 this.noArchive = false;
             } else {
                 this.noArchive = true;
             }
-            this.commonService.loadingHide();
         });
     }
 
@@ -122,11 +120,7 @@ export class ArchivePage {
         if (this.isCurrentArchiveDownload) {
             this.commonService.toastShow("Impossible de supprimer l'archive pendant son téléchargement");
         } else {
-            this.commonService.loadingShow('Please wait...');
-            this.mangaService.removeDownload(archive.id).then(remove => {
-                if (!remove) {
-                    this.commonService.toastShow("Impossible de supprimer l'archive");
-                }
+            this.mangaService.removeDownload(archive.id, true, true).then(remove => {
                 this.showArchives();
             });
         }
@@ -134,39 +128,33 @@ export class ArchivePage {
 
     download(archive) {
         this.commonService.toastShow('Lancement du téléchargement');
-        this.commonService.loadingShow('Please wait...');
-        this.mangaService.getNameArchiveDownload(archive.id).then(data => {
-            if (!data) {
-                this.commonService.toastShow('Impossible de récupérer le nom du fichier à télécharger');
-            } else {
-                let filename = data['name'];
-                this.filesize = data['size'];
-                this.mangaService.getUrlArchiveDownload(archive.id).then(url => {
-                    if(this.fileTransfer==null) {
-                        this.inProgress = true;
-                        this.isCurrentArchiveDownload = true;
-                        this.currentArchiveIdDownload = archive.id;
-                        this.fileTransfer = this.transfer.create();
-                        this.fileTransfer.download(url.toString(), this.file.externalRootDirectory + '/Download/' + filename).then((entry) => {
-                            this.localNotifications.schedule({
-                                id: 1,
-                                text: 'Le fichier téléchargé a été déposé sous '+ entry.toURL(),
-                                sound: null
-                            });
-                            this.filesize = 0;
-                            this.inProgress = false;
-                            this.fileTransfer = null;
-                            this.isCurrentArchiveDownload = false;
-                            this.currentArchiveIdDownload = 0;
-                        }, (error) => {
-                            this.commonService.toastShow('Erreur : impossible de télécharger le fichier');
+        this.mangaService.getNameArchiveDownload(archive.id, false, true).then(data => {
+            let filename = data['name'];
+            this.filesize = data['size'];
+            this.mangaService.getUrlArchiveDownload(archive.id).then(url => {
+                if(this.fileTransfer==null) {
+                    this.inProgress = true;
+                    this.isCurrentArchiveDownload = true;
+                    this.currentArchiveIdDownload = archive.id;
+                    this.fileTransfer = this.transfer.create();
+                    this.fileTransfer.download(url.toString(), this.file.externalRootDirectory + '/Download/' + filename).then((entry) => {
+                        this.localNotifications.schedule({
+                            id: 1,
+                            text: 'Le fichier téléchargé a été déposé sous '+ entry.toURL(),
+                            sound: null
                         });
-                    } else {
-                        this.commonService.toastShow('Veuillez patienter, un téléchargement est déjà en cours.');
-                    }
-                });
-            }
-            this.commonService.loadingHide();
+                        this.filesize = 0;
+                        this.inProgress = false;
+                        this.fileTransfer = null;
+                        this.isCurrentArchiveDownload = false;
+                        this.currentArchiveIdDownload = 0;
+                    }, (error) => {
+                        this.commonService.toastShow('Erreur : impossible de télécharger le fichier');
+                    });
+                } else {
+                    this.commonService.toastShow('Veuillez patienter, un téléchargement est déjà en cours.');
+                }
+            });
         });
     }
 
