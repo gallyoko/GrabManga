@@ -5,16 +5,12 @@ import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
-import { LoginPage } from '../pages/login/index';
 import { HomePage } from '../pages/home/home';
-import { MangaPage } from '../pages/manga/manga';
-import { FavoritePage } from '../pages/favorite/favorite';
-import { MangaInfoPage } from '../pages/manga/manga.info';
-import { MangaDownloadPage } from '../pages/manga/manga.download';
-import { DownloadPage } from '../pages/download/download';
-import { ArchivePage } from '../pages/archive/archive';
 
 import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
+
+import { MangaService } from '../providers/manga-service';
+import { CommonService } from '../providers/common-service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -27,14 +23,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 @NgModule({
   declarations: [
       MyApp,
-      LoginPage,
       HomePage,
-      MangaPage,
-      FavoritePage,
-      MangaInfoPage,
-      MangaDownloadPage,
-      DownloadPage,
-      ArchivePage,
       ProgressBarComponent
   ],
   imports: [
@@ -46,14 +35,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
   bootstrap: [IonicApp],
   entryComponents: [
       MyApp,
-      LoginPage,
-      HomePage,
-      MangaPage,
-      FavoritePage,
-      MangaInfoPage,
-      MangaDownloadPage,
-      DownloadPage,
-      ArchivePage
+      HomePage
   ],
   providers: [
       StatusBar,
@@ -64,6 +46,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
       FileTransfer,
       FileTransferObject,
       LocalNotifications,
+      MangaService,
+      CommonService,
       {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

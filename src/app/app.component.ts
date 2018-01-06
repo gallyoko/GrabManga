@@ -3,12 +3,7 @@ import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { LoginPage } from '../pages/login/index';
 import { HomePage } from '../pages/home/home';
-import { MangaPage } from '../pages/manga/manga';
-import { FavoritePage } from '../pages/favorite/favorite';
-import { DownloadPage } from '../pages/download/download';
-import { ArchivePage } from '../pages/archive/archive';
 
 @Component({
   templateUrl: 'app.html'
@@ -16,7 +11,7 @@ import { ArchivePage } from '../pages/archive/archive';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = LoginPage;
+  rootPage: any = HomePage;
 
   pages: Array<{title: string, component: any, icon: string}>;
 
@@ -25,11 +20,7 @@ export class MyApp {
 
     // used for an example of ngFor and navigation
     this.pages = [
-        { title: 'Accueil', component: HomePage, icon:'home' },
-        { title: 'Manga', component: MangaPage, icon:'list-box' },
-        { title: 'Favoris', component: FavoritePage, icon:'md-star' },
-        { title: 'Génération', component: DownloadPage, icon:'cloud-download' },
-        { title: 'Archive', component: ArchivePage, icon:'download' }
+        { title: 'Accueil', component: HomePage, icon:'home' }
     ];
 
   }

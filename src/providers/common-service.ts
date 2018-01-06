@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Http } from '@angular/http';
 import { App, NavController, Platform, LoadingController, ToastController } from 'ionic-angular';
-import { LoginPage } from '../pages/login/index';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { Toast } from '@ionic-native/toast';
 import 'rxjs/add/operator/map';
@@ -89,10 +88,7 @@ export class CommonService {
         this.setErrorMsg(message);
       } else {
         let exception:any = jsonContent.error.exception;
-          message = exception[0]['message'];
-        if (message.substring(0, 3) == '401') {
-            this.navCtrl.setRoot(LoginPage);
-        }
+        message = exception[0]['message'];
         this.setErrorMsg(message);
       }
       if (showMessage) {

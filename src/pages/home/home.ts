@@ -1,26 +1,20 @@
 import { Component } from '@angular/core';
-import { CommonService } from '../../providers/common-service';
-import { SecurityService } from '../../providers/security-service';
-import { LoginPage } from '../login/index';
-import { NavController } from 'ionic-angular';
+import { MangaService } from '../../providers/manga-service';
 
 @Component({
     selector: 'page-home',
     templateUrl: 'home.html',
-    providers: [CommonService, SecurityService]
+    providers: [MangaService]
 })
 export class HomePage {
 
-  constructor(private navCtrl: NavController, private commonService: CommonService,
-              private securityService: SecurityService) {
+  constructor(private mangaService: MangaService) {
 
   }
 
   ionViewDidEnter () {
-      this.securityService.checkAuth().then(auth => {
-          if (!auth) {
-              this.navCtrl.setRoot(LoginPage);
-          }
+      this.mangaService.updateMangas().then(mangas => {
+          console.log(mangas);
       });
   }
 
