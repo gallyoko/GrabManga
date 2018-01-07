@@ -28,8 +28,8 @@
     </ion-item>
     <ion-item>
       <ion-label>Tome</ion-label>
-      <ion-select [(ngModel)]="tomeId" submitText="Ok" cancelText="Cancel" (ngModelChange)="loadChapters()">
-        <ion-option *ngFor="let tome of tomes" value="{{tome.id}}">{{tome.title}}</ion-option>
+      <ion-select [(ngModel)]="tomeIndex" submitText="Ok" cancelText="Cancel" (ngModelChange)="loadChapters()">
+        <ion-option *ngFor="let tome of manga.tomes; let i = index" value="{{i}}">{{tome.title}}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
@@ -46,8 +46,8 @@
     </ion-item>
     <ion-item>
       <ion-label>Chapitre</ion-label>
-      <ion-select [(ngModel)]="chapterId" submitText="Ok" cancelText="Cancel">
-        <ion-option *ngFor="let chapter of chapters" value="{{chapter.id}}">{{chapter.title}}</ion-option>
+      <ion-select [(ngModel)]="chapterIndex" submitText="Ok" cancelText="Cancel">
+        <ion-option *ngFor="let chapter of chapters; let j = index" value="{{j}}">{{chapter.title}}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>

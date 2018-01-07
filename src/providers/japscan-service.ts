@@ -53,8 +53,10 @@ export class JapscanService {
                     response => {
                         let body: any = response['_body'];
                         let tomes: any = [];
+                        // cut between header/ synopsis & chapter list
                         let elements: any = body.split('<h2 class="bg-header">Liste Des Chapitres</h2>\n' +
                             '\t\t\t\t\t<div id="liste_chapitres">');
+                        // set synopsis if exist
                         if (elements[0].indexOf('<div id="synopsis">') > -1) {
                             let partSynopis: any = elements[0].split('<div id="synopsis">');
                             let synopsisToClean: any = partSynopis[1].trim().replace('</div>','');
@@ -96,6 +98,81 @@ export class JapscanService {
                         }
                         manga.tomes = tomes;
                         resolve(manga);
+                    },
+                    err => {
+                        resolve(false);
+                    }
+                );
+        });
+    }
+
+    getMangaBookImages(manga) {
+        return new Promise(resolve => {
+            let images: any = [];
+            for(let i = 0; i < manga.tomes.length; i++) {
+                this.getMangaTomeImages(manga.tomes[i]).then(imagesTome => {
+                    images.push(imagesTome);
+                });
+            }
+            resolve(images);
+        });
+    }
+
+    getMangaTomeImages(tome) {
+        return new Promise(resolve => {
+            console.log(tome.chapters);
+            let images: any = [];
+            for(let i = 0; i < tome.chapters.length; i++) {
+                this.getMangaChapterImages(tome.chapters[i]).then(imagesChapter => {
+                    images.push(imagesChapter);
+                });
+            }
+            resolve(images);
+        });
+    }
+
+
+    getMangaChapterImages(chapter) {
+        return new Promise(resolve => {
+            this.http.get(chapter.url)
+                .subscribe(
+                    response => {
+                        let images: any = {};
+                        let body: any = response['_body'];
+                        let elements: any = body.split('<select id="pages" name="pages"');
+                        if (elements.length > 1) {
+                            let pageListToClean: any = elements[1].trim().split('</select>');
+                            let pageList: any = pageListToClean[0].trim().split('data-img="');
+                            let bookPages: any = [];
+                            for(let i = 0; i < pageList.length; i++) {
+                                let pageInfo: any = pageList[i].trim().split('" value="');
+                                if (pageInfo.length > 1) {
+                                    let page: any = pageInfo[0].trim();
+                                    if (page.substr(0, 4) != 'IMG_') {
+                                        bookPages.push(page);
+                                    }
+                                }
+                            }
+                            if (bookPages.length > 0) {
+                                let baseUrlToCleanTmp: any = elements[0].trim().split('<select name="mangas" id="mangas" ');
+                                let baseUrlToClean: any = baseUrlToCleanTmp[1].trim().split('" data-uri="');
+                                let dataUrlNomToClean: any = baseUrlToClean[0];
+                                let dataUrlTomeToClean: any = baseUrlToClean[2];
+                                let dataUrlNom: any = dataUrlNomToClean.trim().replace('data-nom="', '');
+                                let dataUrlTome: any = '';
+                                if (dataUrlTomeToClean.indexOf('" data-nom="') > -1) {
+                                    let dataUrlTomeToCleanTmp: any = dataUrlTomeToClean.trim().split('" data-nom="');
+                                    dataUrlTome = dataUrlTomeToCleanTmp[0].replace('"></select>', '');
+                                } else {
+                                    dataUrlTome = dataUrlTomeToClean.trim().replace('"></select>', '');
+                                }
+                                let urlMask: any = 'http://ww1.japscan.com/lel/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome + '/';
+                                images.urlMask = urlMask;
+                                images.pages = bookPages;
+                                images.order = dataUrlTome;
+                            }
+                        }
+                        resolve(images);
                     },
                     err => {
                         resolve(false);
