@@ -6,9 +6,13 @@ import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { MangaPage } from '../pages/manga/manga';
+import { MangaInfoPage } from '../pages/manga/manga.info';
+import { MangaDownloadPage } from '../pages/manga/manga.download';
 
 import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 
+import { JapscanService } from '../providers/japscan-service';
 import { MangaService } from '../providers/manga-service';
 import { CommonService } from '../providers/common-service';
 
@@ -24,6 +28,9 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
   declarations: [
       MyApp,
       HomePage,
+      MangaPage,
+      MangaInfoPage,
+      MangaDownloadPage,
       ProgressBarComponent
   ],
   imports: [
@@ -35,7 +42,10 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
   bootstrap: [IonicApp],
   entryComponents: [
       MyApp,
-      HomePage
+      HomePage,
+      MangaPage,
+      MangaInfoPage,
+      MangaDownloadPage
   ],
   providers: [
       StatusBar,
@@ -48,6 +58,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
       LocalNotifications,
       MangaService,
       CommonService,
+      JapscanService,
       {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

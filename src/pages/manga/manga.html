@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Manga</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-searchbar (ionInput)="getMangasContent($event)"></ion-searchbar>
+  <ion-list>
+    <ion-item *ngFor="let manga of mangas" (click)="showInfo(manga)">
+      {{ manga.title }}
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-scroll zooming="true" scrollX="true" class="scrollContent">
+    <ion-row nowrap class="scrollSearch">
+      <ion-col *ngFor="let pageAlpha of paginatorAlpha">
+        <button  class="scrollItem" ion-button icon-only (click)="getMangasBeginBy(pageAlpha)">
+          {{ pageAlpha }}
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-scroll>
+</ion-footer>
