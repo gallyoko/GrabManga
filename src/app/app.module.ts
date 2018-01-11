@@ -20,6 +20,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Toast } from '@ionic-native/toast';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
+import { File } from '@ionic-native/file';
+import { FileOpener } from '@ionic-native/file-opener';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,9 @@ import { SpinnerDialog } from '@ionic-native/spinner-dialog';
       MangaService,
       CommonService,
       JapscanService,
-      {provide: ErrorHandler, useClass: IonicErrorHandler}
+      {provide: ErrorHandler, useClass: IonicErrorHandler},
+      File,
+      FileOpener
   ]
 })
 export class AppModule {}

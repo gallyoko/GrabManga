@@ -44,8 +44,8 @@ export class MangaDownloadPage {
             this.commonService.loadingHide();
         });*/
         this.commonService.loadingShow('Please wait...');
-        this.japscanService.makePdf().then(images => {
-            console.log(images);
+        this.japscanService.makePdf().then(pdf => {
+            this.commonService.downloadPdf(pdf);
             this.commonService.loadingHide();
         });
     }

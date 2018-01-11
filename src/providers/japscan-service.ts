@@ -3,11 +3,20 @@ import { Http } from '@angular/http';
 import { MangaModel } from '../models/manga.model';
 import { TomeModel } from '../models/tome.model';
 import { ChapterModel } from '../models/chapter.model';
-//import * as PDFDocument from 'pdfkit';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class JapscanService {
+    letterObj = {
+        to: '',
+        from: '',
+        text: ''
+    }
+
+    pdfObj = null;
 
     constructor(public http: Http) {
         
@@ -184,37 +193,46 @@ export class JapscanService {
 
     makePdf() {
         return new Promise(resolve => {
-            /*let doc: any = new PDFDocument;
-            doc.pipe.fs.createWriteStream('output.pdf');
+            var docDefinition = {
+                content: [
+                    { text: 'REMINDER', style: 'header' },
+                    { text: new Date().toTimeString(), alignment: 'right' },
 
-            doc.font('fonts/PalatinoBold.ttf')
-                .fontSize(25)
-                .text('Some text with an embedded font!', 100, 100);
+                    { text: 'From', style: 'subheader' },
+                    { text: this.letterObj.from },
 
-            doc.addPage()
-                .fontSize(25)
-                .text('Here is some vector graphics...', 100, 100);
+                    { text: 'To', style: 'subheader' },
+                    this.letterObj.to,
 
-            doc.save()
-                .moveTo(100, 150)
-                .lineTo(100, 250)
-                .lineTo(200, 250)
-                .fill("#FF3300");
+                    { text: this.letterObj.text, style: 'story', margin: [0, 20, 0, 20] },
 
-            doc.scale(0.6)
-                .translate(470, -380)
-                .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
-                .fill('red', 'even-odd')
-                .restore();
-
-                doc.addPage()
-                    .fillColor("blue")
-                    .text('Here is a link!', 100, 100)
-                    .underline(100, 100, 160, 27, "#0000FF")
-                    .link(100, 100, 160, 27, 'http://google.com/');
-
-            doc.end();*/
-            resolve(true);
+                    {
+                        ul: [
+                            'Bacon',
+                            'Rips',
+                            'BBQ',
+                        ]
+                    }
+                ],
+                styles: {
+                    header: {
+                        fontSize: 18,
+                        bold: true,
+                    },
+                    subheader: {
+                        fontSize: 14,
+                        bold: true,
+                        margin: [0, 15, 0, 0]
+                    },
+                    story: {
+                        italic: true,
+                        alignment: 'center',
+                        width: '50%',
+                    }
+                }
+            }
+            this.pdfObj = pdfMake.createPdf(docDefinition);
+            resolve(this.pdfObj);
         });
     }
 
