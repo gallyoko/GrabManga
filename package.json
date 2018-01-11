@@ -1,7 +1,7 @@
 {
-    "name": "demo",
+    "name": "GrabManga",
     "version": "0.0.1",
-    "author": "Ionic Framework",
+    "author": "Gallyoko",
     "homepage": "http://ionicframework.com/",
     "private": true,
     "scripts": {
@@ -21,27 +21,19 @@
         "@angular/platform-browser": "4.1.3",
         "@angular/platform-browser-dynamic": "4.1.3",
         "@ionic-native/core": "^3.12.1",
-        "@ionic-native/file": "^4.3.1",
-        "@ionic-native/file-transfer": "^4.3.1",
-        "@ionic-native/local-notifications": "^4.3.1",
         "@ionic-native/spinner-dialog": "^4.3.1",
         "@ionic-native/splash-screen": "3.12.1",
         "@ionic-native/status-bar": "3.12.1",
         "@ionic-native/toast": "^4.3.1",
         "@ionic/storage": "^2.0.1",
-        "cordova-android": "^6.3.0",
-        "cordova-ios": "^4.4.0",
-        "cordova-plugin-compat": "^1.2.0",
+        "cordova-android": "^6.4.0",
         "cordova-plugin-console": "^1.1.0",
-        "cordova-plugin-device": "^1.1.6",
-        "cordova-plugin-file": "^4.3.3",
-        "cordova-plugin-file-transfer": "^1.6.3",
+        "cordova-plugin-device": "^1.1.7",
         "cordova-plugin-native-spinner": "^1.1.3",
-        "cordova-plugin-splashscreen": "^4.0.3",
-        "cordova-plugin-statusbar": "^2.2.3",
-        "cordova-plugin-whitelist": "^1.3.2",
+        "cordova-plugin-splashscreen": "^4.1.0",
+        "cordova-plugin-statusbar": "^2.4.1",
+        "cordova-plugin-whitelist": "^1.3.3",
         "cordova-plugin-x-toast": "^2.6.0",
-        "de.appplant.cordova.plugin.local-notification": "^0.8.5",
         "ionic-angular": "3.6.1",
         "ionic-plugin-keyboard": "^2.2.1",
         "ionicons": "3.0.0",
@@ -56,7 +48,6 @@
     "description": "An Ionic project",
     "cordova": {
         "plugins": {
-            "cordova-plugin-console": {},
             "cordova-plugin-device": {},
             "cordova-plugin-splashscreen": {},
             "cordova-plugin-statusbar": {},
@@ -64,13 +55,10 @@
             "ionic-plugin-keyboard": {},
             "cordova-plugin-native-spinner": {},
             "cordova-plugin-x-toast": {},
-            "cordova-plugin-file-transfer": {},
-            "cordova-plugin-file": {},
-            "de.appplant.cordova.plugin.local-notification": {}
+            "cordova-plugin-console": {}
         },
         "platforms": [
-            "android",
-            "ios"
+            "android"
         ]
     }
 }

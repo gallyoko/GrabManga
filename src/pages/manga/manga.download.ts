@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { NavParams, ViewController } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { JapscanService } from '../../providers/japscan-service';
 
@@ -11,24 +11,15 @@ import { JapscanService } from '../../providers/japscan-service';
 export class MangaDownloadPage {
 
     private manga:any = {};
-    private tomes:any = [];
     private tomeIndex:any = 0;
     private chapters:any = [];
     private chapterIndex:any = 0;
 
-    constructor(private navCtrl: NavController, public params: NavParams,
+    constructor(public params: NavParams,
                 public viewCtrl: ViewController, public commonService: CommonService,
                 public japscanService: JapscanService) {
         this.manga = this.params.get('manga');
         this.loadChaptersInit();
-    }
-
-    ionViewDidEnter () {
-        /*this.commonService.loadingShow('Please wait...');
-        this.japscanService.getMangaImages(this.manga.tomes[5].chapters[1]).then(images => {
-            console.log(images);
-            this.commonService.loadingHide();
-        });*/
     }
 
     loadChaptersInit() {
@@ -38,7 +29,9 @@ export class MangaDownloadPage {
             );
         };
         let tome = filterTome();
-        this.chapters = tome[0]['chapters'];
+        if (tome.length > 0) {
+            this.chapters = tome[0]['chapters'];
+        }
     }
 
     loadChapters() {
@@ -46,8 +39,12 @@ export class MangaDownloadPage {
     }
 
     downloadManga() {
+        /*this.japscanService.getMangaBookImages(this.manga).then(images => {
+            console.log(images);
+            this.commonService.loadingHide();
+        });*/
         this.commonService.loadingShow('Please wait...');
-        this.japscanService.getMangaBookImages(this.manga).then(images => {
+        this.japscanService.makePdf().then(images => {
             console.log(images);
             this.commonService.loadingHide();
         });

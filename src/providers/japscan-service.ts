@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import { MangaModel } from '../models/manga.model';
 import { TomeModel } from '../models/tome.model';
 import { ChapterModel } from '../models/chapter.model';
+//import * as PDFDocument from 'pdfkit';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class JapscanService {
 
     getMangas() {
         return new Promise(resolve => {
-            this.http.get('http://www.japscan.com/mangas/')
+            this.http.get('/mangas/')
                 .subscribe(
                     response => {
                         let mangas: any = [];
@@ -30,7 +31,7 @@ export class JapscanService {
                                     if (titleTmp.length > 0 ) {
                                         let manga = new MangaModel(
                                             titleTmp[1],
-                                            'http://www.japscan.com' + titleTmp[0].trim()
+                                            titleTmp[0].trim()
                                         );
                                         mangas.push(manga);
                                     }
@@ -81,7 +82,7 @@ export class JapscanService {
                                     let urlAndTitleChapterToClean: any = chapterList[j].trim().split('">');
                                     if (urlAndTitleChapterToClean.length > 1) {
                                         if (urlAndTitleChapterToClean[0].indexOf('//www.japscan.com/lecture-en-ligne') > -1) {
-                                            let urlChapter: any = 'http:' + urlAndTitleChapterToClean[0].trim();
+                                            let urlChapter: any = urlAndTitleChapterToClean[0].trim().replace('//www.japscan.com', '');
                                             let titleChapterToClean: any = urlAndTitleChapterToClean[1].trim().replace('</a>\n' +
                                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</li>', '');
                                             let titleChapter: any = titleChapterToClean.trim().replace('"', '');
@@ -178,6 +179,42 @@ export class JapscanService {
                         resolve(false);
                     }
                 );
+        });
+    }
+
+    makePdf() {
+        return new Promise(resolve => {
+            /*let doc: any = new PDFDocument;
+            doc.pipe.fs.createWriteStream('output.pdf');
+
+            doc.font('fonts/PalatinoBold.ttf')
+                .fontSize(25)
+                .text('Some text with an embedded font!', 100, 100);
+
+            doc.addPage()
+                .fontSize(25)
+                .text('Here is some vector graphics...', 100, 100);
+
+            doc.save()
+                .moveTo(100, 150)
+                .lineTo(100, 250)
+                .lineTo(200, 250)
+                .fill("#FF3300");
+
+            doc.scale(0.6)
+                .translate(470, -380)
+                .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
+                .fill('red', 'even-odd')
+                .restore();
+
+                doc.addPage()
+                    .fillColor("blue")
+                    .text('Here is a link!', 100, 100)
+                    .underline(100, 100, 160, 27, "#0000FF")
+                    .link(100, 100, 160, 27, 'http://google.com/');
+
+            doc.end();*/
+            resolve(true);
         });
     }
 

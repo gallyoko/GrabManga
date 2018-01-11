@@ -1,8 +1,14 @@
 {
-  "name": "demo",
+  "name": "GrabManga",
   "app_id": "",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "proxies": [
+    {
+      "path": "/",
+      "proxyUrl": "http://m.japscan.com"
+    }
+  ]
 }

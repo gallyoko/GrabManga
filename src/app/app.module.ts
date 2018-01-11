@@ -20,9 +20,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Toast } from '@ionic-native/toast';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
-import { File } from '@ionic-native/file';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
-import { LocalNotifications } from '@ionic-native/local-notifications';
 
 @NgModule({
   declarations: [
@@ -52,10 +49,6 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
       SplashScreen,
       Toast,
       SpinnerDialog,
-      File,
-      FileTransfer,
-      FileTransferObject,
-      LocalNotifications,
       MangaService,
       CommonService,
       JapscanService,

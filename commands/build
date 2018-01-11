@@ -26,7 +26,7 @@ else
 
     ionic cordova build android --release >> log/build.log
 
-    cd ${path_commands}/../platforms/android/build/outputs/apk
+    cd ${path_commands}/../platforms/android/build/outputs/apk/release
 
     jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${path_commands}/../delivery/keystore/grabmanga.keystore android-release-unsigned.apk alias_name >> ${path_commands}/../log/build.log
 
@@ -36,7 +36,7 @@ else
         mv -f ${path_commands}/../delivery/GrabManga.apk ${path_commands}/../delivery/GrabManga_${date}.apk
     fi
 
-    mv -f ${path_commands}/../platforms/android/build/outputs/apk/android-release-unsigned.apk ${path_commands}/../delivery/GrabManga.apk
+    mv -f ${path_commands}/../platforms/android/build/outputs/apk/release/android-release-unsigned.apk ${path_commands}/../delivery/GrabManga.apk
 fi
 
 cd $current_path
