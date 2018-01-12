@@ -20,7 +20,11 @@ export class MangaPage {
             , 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
         this.commonService.loadingShow('Please wait...');
         this.japscanService.getMangas().then(mangas => {
-            this.mangaList = mangas;
+            if (!mangas) {
+                this.commonService.toastShow('Erreur lors de la récupération des titres manga.');
+            } else {
+                this.mangaList = mangas;
+            }
             this.commonService.loadingHide();
         });
     }

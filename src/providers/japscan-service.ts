@@ -7,24 +7,18 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import 'rxjs/add/operator/map';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class JapscanService {
-    letterObj = {
-        to: '',
-        from: '',
-        text: ''
-    }
-
     pdfObj = null;
+    private images: any = [];
 
-    constructor(public http: Http) {
-        
-    }
+    constructor(public http: Http) {}
 
     getMangas() {
         return new Promise(resolve => {
-            this.http.get('/mangas/')
+            this.http.get('/api/mangas/')
                 .subscribe(
                     response => {
                         let mangas: any = [];
@@ -40,7 +34,7 @@ export class JapscanService {
                                     if (titleTmp.length > 0 ) {
                                         let manga = new MangaModel(
                                             titleTmp[1],
-                                            titleTmp[0].trim()
+                                            '/api'+titleTmp[0].trim()
                                         );
                                         mangas.push(manga);
                                     }
@@ -91,17 +85,21 @@ export class JapscanService {
                                     let urlAndTitleChapterToClean: any = chapterList[j].trim().split('">');
                                     if (urlAndTitleChapterToClean.length > 1) {
                                         if (urlAndTitleChapterToClean[0].indexOf('//www.japscan.com/lecture-en-ligne') > -1) {
-                                            let urlChapter: any = urlAndTitleChapterToClean[0].trim().replace('//www.japscan.com', '');
+                                            let urlChapter: any = '/api/'+urlAndTitleChapterToClean[0].trim().replace('//www.japscan.com', '');
                                             let titleChapterToClean: any = urlAndTitleChapterToClean[1].trim().replace('</a>\n' +
                                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</li>', '');
                                             let titleChapter: any = titleChapterToClean.trim().replace('"', '');
-                                            let chapter: any = new ChapterModel(titleChapter, urlChapter);
+                                            let order : number = chapterList.length - j;
+                                            let chapter: any = new ChapterModel(titleChapter, urlChapter, order);
                                             chapters.push(chapter);
                                         }
                                     }
                                 }
                             }
                             if (chapters.length > 0) {
+                                chapters.sort(function (a, b) {
+                                    return a.order - b.order;
+                                });
                                 let tome: any = new TomeModel(tomeTitle, chapters);
                                 tomes.push(tome);
                             }
@@ -113,6 +111,13 @@ export class JapscanService {
                         resolve(false);
                     }
                 );
+        });
+    }
+
+    getImages() {
+        return Observable.create((observer) => {
+            observer.next(this.images);
+            observer.complete();
         });
     }
 
@@ -129,20 +134,103 @@ export class JapscanService {
     }
 
     getMangaTomeImages(tome) {
+        return Observable.create((observer) => {
+            console.log(tome.chapters);
+            this.images = [];
+            for(let i = 0; i < tome.chapters.length; i++) {
+                this.getMangaChapterImages(tome.chapters[i]).subscribe(imagesChapter => {
+                    this.images.push(imagesChapter);
+                    if (this.images.length == tome.chapters.length) {
+                        this.images.sort(function (a, b) {
+                            return a.order - b.order;
+                        });
+                        observer.next(true);
+                        observer.complete();
+                    }
+                });
+            }
+        });
+    }
+
+    /*getMangaTomeImages(tome) {
         return new Promise(resolve => {
             console.log(tome.chapters);
             let images: any = [];
             for(let i = 0; i < tome.chapters.length; i++) {
+                console.log('getMangaTomeImages => ' + i);
                 this.getMangaChapterImages(tome.chapters[i]).then(imagesChapter => {
                     images.push(imagesChapter);
+                    if (i >= (tome.chapters.length-1)) {
+                        images.sort(function (a, b) {
+                            return a.order - b.order;
+                        });
+                        resolve(images);
+                    }
                 });
             }
-            resolve(images);
+        });
+    }*/
+
+    getMangaChapterImages(chapter) {
+        return Observable.create((observer) => {
+            this.http.get(chapter.url)
+                .subscribe(
+                    response => {
+                        let images: any = {};
+                        let body: any = response['_body'];
+                        let elements: any = body.split('<select id="pages" name="pages"');
+                        if (elements.length > 1) {
+                            let pageListToClean: any = elements[1].trim().split('</select>');
+                            let pageList: any = pageListToClean[0].trim().split('data-img="');
+                            let bookPages: any = [];
+                            for(let i = 0; i < pageList.length; i++) {
+                                let pageInfo: any = pageList[i].trim().split('" value="');
+                                if (pageInfo.length > 1) {
+                                    let page: any = pageInfo[0].trim();
+                                    if (page.substr(0, 4) != 'IMG_') {
+                                        bookPages.push(page);
+                                    }
+                                }
+                                if (i >= (pageList.length -1)) {
+                                    if (bookPages.length > 0) {
+                                        let baseUrlToCleanTmp: any = elements[0].trim().split('<select name="mangas" id="mangas" ');
+                                        let baseUrlToClean: any = baseUrlToCleanTmp[1].trim().split('" data-uri="');
+                                        let dataUrlNomToClean: any = baseUrlToClean[0];
+                                        let dataUrlTomeToClean: any = baseUrlToClean[2];
+                                        let dataUrlNom: any = dataUrlNomToClean.trim().replace('data-nom="', '');
+                                        let dataUrlTome: any = '';
+                                        if (dataUrlTomeToClean.indexOf('" data-nom="') > -1) {
+                                            let dataUrlTomeToCleanTmp: any = dataUrlTomeToClean.trim().split('" data-nom="');
+                                            dataUrlTome = dataUrlTomeToCleanTmp[0].replace('"></select>', '');
+                                        } else {
+                                            dataUrlTome = dataUrlTomeToClean.trim().replace('"></select>', '');
+                                        }
+                                        let urlMask: any = '/book/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome + '/';
+                                        images.urlMask = urlMask;
+                                        images.pages = bookPages;
+                                        images.order = chapter.order;
+                                        observer.next(images);
+                                        observer.complete();
+                                    } else {
+                                        observer.next(false);
+                                        observer.complete();
+                                    }
+                                }
+                            }
+                        } else {
+                            observer.next(false);
+                            observer.complete();
+                        }
+                    },
+                    err => {
+                        observer.next(false);
+                        observer.complete();
+                    }
+                );
         });
     }
 
-
-    getMangaChapterImages(chapter) {
+    /*getMangaChapterImages(chapter) {
         return new Promise(resolve => {
             this.http.get(chapter.url)
                 .subscribe(
@@ -176,65 +264,121 @@ export class JapscanService {
                                 } else {
                                     dataUrlTome = dataUrlTomeToClean.trim().replace('"></select>', '');
                                 }
-                                let urlMask: any = 'http://ww1.japscan.com/lel/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome + '/';
+                                let urlMask: any = '/book/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome + '/';
                                 images.urlMask = urlMask;
                                 images.pages = bookPages;
-                                images.order = dataUrlTome;
+                                images.order = parseInt(dataUrlTome);
+                                resolve(images);
+                            } else {
+                                resolve(false);
                             }
+                        } else {
+                            resolve(false);
                         }
-                        resolve(images);
                     },
                     err => {
                         resolve(false);
                     }
                 );
         });
-    }
+    }*/
 
-    makePdf() {
+    makePdfChapter(images) {
         return new Promise(resolve => {
-            var docDefinition = {
-                content: [
-                    { text: 'REMINDER', style: 'header' },
-                    { text: new Date().toTimeString(), alignment: 'right' },
-
-                    { text: 'From', style: 'subheader' },
-                    { text: this.letterObj.from },
-
-                    { text: 'To', style: 'subheader' },
-                    this.letterObj.to,
-
-                    { text: this.letterObj.text, style: 'story', margin: [0, 20, 0, 20] },
-
-                    {
-                        ul: [
-                            'Bacon',
-                            'Rips',
-                            'BBQ',
-                        ]
+            const content: any = [];
+            const contentToOrder: any = [];
+            for(let i = 0; i < images.pages.length; i++) {
+                this.getBase64ImageFromURL(images.urlMask + images.pages[i]).subscribe(base64data => {
+                    contentToOrder.push({'order': i, 'value': base64data});
+                    if (contentToOrder.length == images.pages.length) {
+                        contentToOrder.sort(function (a, b) {
+                            return a.order - b.order;
+                        });
+                        for(let j = 0; j < contentToOrder.length; j++) {
+                            content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: 500});
+                            if (content.length == contentToOrder.length) {
+                                var docDefinition = {
+                                    content: content
+                                };
+                                this.pdfObj = pdfMake.createPdf(docDefinition);
+                                resolve(this.pdfObj);
+                            }
+                        }
                     }
-                ],
-                styles: {
-                    header: {
-                        fontSize: 18,
-                        bold: true,
-                    },
-                    subheader: {
-                        fontSize: 14,
-                        bold: true,
-                        margin: [0, 15, 0, 0]
-                    },
-                    story: {
-                        italic: true,
-                        alignment: 'center',
-                        width: '50%',
-                    }
-                }
+                });
             }
-            this.pdfObj = pdfMake.createPdf(docDefinition);
-            resolve(this.pdfObj);
         });
     }
 
-}
+    makePdfTome() {
+        return new Promise(resolve => {
+            this.getImages().subscribe(imagesTome => {
+                console.log(imagesTome);
+                let images: any = imagesTome;
+                images.sort(function (a, b) {
+                    return a.order - b.order;
+                });
+                const content: any = [];
+                const contentToOrder: any = [];
+                let allUrl: any = [];
+                let count: number = 0;
+                for(let k = 0; k < images.length; k++) {
+                    count = count + images[k].pages.length;
+                    for(let i = 0; i < images[k].pages.length; i++) {
+                        allUrl.push(images[k].urlMask + images[k].pages[i]);
+                    }
+                }
+                for(let j = 0; j < allUrl.length; j++) {
+                    this.getBase64ImageFromURL(allUrl[j]).subscribe(base64data => {
+                        contentToOrder.push({'order': j, 'value': base64data});
+                        if (contentToOrder.length == allUrl.length) {
+                            contentToOrder.sort(function (a, b) {
+                                return a.order - b.order;
+                            });
+                            for(let l = 0; l < contentToOrder.length; l++) {
+                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: 500});
+                                if (content.length == contentToOrder.length) {
+                                    var docDefinition = {
+                                        content: content
+                                    };
+                                    this.pdfObj = pdfMake.createPdf(docDefinition);
+                                    resolve(this.pdfObj);
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    }
 
+    getBase64ImageFromURL(url: string) {
+        return Observable.create((observer) => {
+            let img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.src = url;
+            if (!img.complete) {
+                img.onload = () => {
+                    observer.next(this.getBase64Image(img));
+                    observer.complete();
+                };
+                img.onerror = (err) => {
+                    observer.error(err);
+                };
+            } else {
+                observer.next(this.getBase64Image(img));
+                observer.complete();
+            }
+        });
+    }
+
+    getBase64Image(img: HTMLImageElement) {
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        var dataURL = canvas.toDataURL("image/png");
+        return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+    }
+}

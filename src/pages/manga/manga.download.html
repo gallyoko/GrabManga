@@ -15,18 +15,6 @@
 <ion-content padding>
   <ion-list>
     <ion-item>
-      <ion-grid>
-        <ion-row>
-          <ion-col col-9>Collection complète</ion-col>
-          <ion-col col-3>
-            <button ion-button (click)="downloadManga()">
-              <ion-icon name="cloud-download"></ion-icon>
-            </button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-    <ion-item>
       <ion-label>Tome</ion-label>
       <ion-select [(ngModel)]="tomeIndex" submitText="Ok" cancelText="Cancel" (ngModelChange)="loadChapters()">
         <ion-option *ngFor="let tome of manga.tomes; let i = index" value="{{i}}">{{tome.title}}</ion-option>
@@ -44,13 +32,13 @@
         </ion-row>
       </ion-grid>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="showChapters">
       <ion-label>Chapitre</ion-label>
       <ion-select [(ngModel)]="chapterIndex" submitText="Ok" cancelText="Cancel">
         <ion-option *ngFor="let chapter of chapters; let j = index" value="{{j}}">{{chapter.title}}</ion-option>
       </ion-select>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="showChapters">
       <ion-grid>
         <ion-row>
           <ion-col col-9>Télécharger le chapitre</ion-col>

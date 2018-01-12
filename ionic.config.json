@@ -7,7 +7,11 @@
   },
   "proxies": [
     {
-      "path": "/",
+      "path": "/book",
+      "proxyUrl": "http://ww1.japscan.com/lel"
+    },
+    {
+      "path": "/api",
       "proxyUrl": "http://m.japscan.com"
     }
   ]

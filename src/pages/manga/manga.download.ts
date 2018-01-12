@@ -11,9 +11,10 @@ import { JapscanService } from '../../providers/japscan-service';
 export class MangaDownloadPage {
 
     private manga:any = {};
-    private tomeIndex:any = 0;
+    private tomeIndex:any;
     private chapters:any = [];
-    private chapterIndex:any = 0;
+    private chapterIndex:any;
+    private showChapters: any = false;
 
     constructor(public params: NavParams,
                 public viewCtrl: ViewController, public commonService: CommonService,
@@ -31,39 +32,58 @@ export class MangaDownloadPage {
         let tome = filterTome();
         if (tome.length > 0) {
             this.chapters = tome[0]['chapters'];
+            if (this.chapters.length > 0) {
+                this.showChapters = true;
+            } else {
+                this.showChapters = false;
+            }
         }
     }
 
     loadChapters() {
         this.chapters = this.manga.tomes[this.tomeIndex].chapters;
-    }
-
-    downloadManga() {
-        /*this.japscanService.getMangaBookImages(this.manga).then(images => {
-            console.log(images);
-            this.commonService.loadingHide();
-        });*/
-        this.commonService.loadingShow('Please wait...');
-        this.japscanService.makePdf().then(pdf => {
-            this.commonService.downloadPdf(pdf);
-            this.commonService.loadingHide();
-        });
+        if (this.chapters.length > 0) {
+            this.showChapters = true;
+        } else {
+            this.showChapters = false;
+        }
     }
 
     downloadTome() {
-        this.commonService.loadingShow('Please wait...');
-        this.japscanService.getMangaTomeImages(this.manga.tomes[this.tomeIndex]).then(images => {
-            console.log(images);
-            this.commonService.loadingHide();
-        });
+        if (this.tomeIndex) {
+            this.commonService.loadingShow('Please wait...');
+            this.japscanService.getMangaTomeImages(this.manga.tomes[this.tomeIndex]).subscribe(imagesToOrder => {
+                console.log('getMangaTomeImages OK');
+                console.log(imagesToOrder);
+                if (imagesToOrder) {
+                    this.japscanService.makePdfTome().then(pdf => {
+                        const name: string = this.manga.title + '_' +
+                            this.manga.tomes[this.tomeIndex].title;
+                        this.commonService.downloadPdf(name, pdf);
+                        this.commonService.loadingHide();
+                    });
+                }
+
+            });
+        } else {
+            this.commonService.toastShow('Veuillez sélectionner un tome.');
+        }
     }
 
     downloadChapter() {
-        this.commonService.loadingShow('Please wait...');
-        this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).then(images => {
-            console.log(images);
-            this.commonService.loadingHide();
-        });
+        if (this.chapterIndex) {
+            this.commonService.loadingShow('Please wait...');
+            this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).subscribe(images => {
+                this.japscanService.makePdfChapter(images).then(pdf => {
+                    const name: string = this.manga.title + '_' +
+                        this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
+                    this.commonService.downloadPdf(name, pdf);
+                    this.commonService.loadingHide();
+                });
+            });
+        } else {
+            this.commonService.toastShow('Veuillez sélectionner un chapitre.');
+        }
     }
 
     dismiss() {
