@@ -235,7 +235,11 @@ export class JapscanService {
                             content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: 500});
                             if (content.length == contentToOrder.length) {
                                 var docDefinition = {
-                                    content: content
+                                    content: content,
+                                    info: {
+                                        title: 'test1',
+                                        author: 'Gallyoko'
+                                    },
                                 };
                                 this.pdfObj = pdfMake.createPdf(docDefinition);
                                 resolve(this.pdfObj);

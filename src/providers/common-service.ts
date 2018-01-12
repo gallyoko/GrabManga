@@ -55,19 +55,14 @@ export class CommonService {
 
   downloadPdf(name, pdfObj) {
     if (this.platform.is('cordova')) {
-      console.log("6 => ok");
       pdfObj.getBuffer((buffer) => {
         var blob = new Blob([buffer], { type: 'application/pdf' });
-
-        // Save the PDF to the data Directory of our App
-        this.file.writeFile(this.file.dataDirectory, 'test.pdf', blob, { replace: true }).then(fileEntry => {
-          // Open the PDf with the correct OS tools
-          this.fileOpener.open(this.file.dataDirectory + 'test.pdf', 'application/pdf');
+        this.file.writeFile(this.file.dataDirectory, name+'.pdf', blob, { replace: true }).then(fileEntry => {
+          this.fileOpener.open(this.file.dataDirectory + name+'.pdf', 'application/pdf');
         })
       });
     } else {
-      // On a browser simply use download!
-      pdfObj.download();
+      pdfObj.download(name+'.pdf');
     }
   }
 }
