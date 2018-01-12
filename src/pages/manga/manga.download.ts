@@ -53,8 +53,6 @@ export class MangaDownloadPage {
         if (this.tomeIndex) {
             this.commonService.loadingShow('Please wait...');
             this.japscanService.getMangaTomeImages(this.manga.tomes[this.tomeIndex]).subscribe(imagesToOrder => {
-                console.log('getMangaTomeImages OK');
-                console.log(imagesToOrder);
                 if (imagesToOrder) {
                     this.japscanService.makePdfTome().then(pdf => {
                         const name: string = this.manga.title + '_' +

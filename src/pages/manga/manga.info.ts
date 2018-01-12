@@ -25,7 +25,6 @@ export class MangaInfoPage {
     showMangaInfo() {
         this.commonService.loadingShow('Please wait...');
         this.japscanService.getMangaTomeAndChapter(this.manga).then(manga => {
-            console.log(manga);
             this.commonService.loadingHide();
         });
     }

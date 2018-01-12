@@ -135,7 +135,7 @@ export class JapscanService {
 
     getMangaTomeImages(tome) {
         return Observable.create((observer) => {
-            console.log(tome.chapters);
+            //console.log(tome.chapters);
             this.images = [];
             for(let i = 0; i < tome.chapters.length; i++) {
                 this.getMangaChapterImages(tome.chapters[i]).subscribe(imagesChapter => {
@@ -151,25 +151,6 @@ export class JapscanService {
             }
         });
     }
-
-    /*getMangaTomeImages(tome) {
-        return new Promise(resolve => {
-            console.log(tome.chapters);
-            let images: any = [];
-            for(let i = 0; i < tome.chapters.length; i++) {
-                console.log('getMangaTomeImages => ' + i);
-                this.getMangaChapterImages(tome.chapters[i]).then(imagesChapter => {
-                    images.push(imagesChapter);
-                    if (i >= (tome.chapters.length-1)) {
-                        images.sort(function (a, b) {
-                            return a.order - b.order;
-                        });
-                        resolve(images);
-                    }
-                });
-            }
-        });
-    }*/
 
     getMangaChapterImages(chapter) {
         return Observable.create((observer) => {
@@ -193,19 +174,28 @@ export class JapscanService {
                                 }
                                 if (i >= (pageList.length -1)) {
                                     if (bookPages.length > 0) {
+                                        let dataUrlTomeToClean: any = '';
+                                        let dataUrlNom: any = '';
+                                        let checkBaseUrl: any = elements[0].trim().split('<select name="chapitres" id="chapitres" ');
                                         let baseUrlToCleanTmp: any = elements[0].trim().split('<select name="mangas" id="mangas" ');
                                         let baseUrlToClean: any = baseUrlToCleanTmp[1].trim().split('" data-uri="');
                                         let dataUrlNomToClean: any = baseUrlToClean[0];
-                                        let dataUrlTomeToClean: any = baseUrlToClean[2];
-                                        let dataUrlNom: any = dataUrlNomToClean.trim().replace('data-nom="', '');
+                                        dataUrlTomeToClean = baseUrlToClean[2];
+                                        dataUrlNom = dataUrlNomToClean.trim().replace('data-nom="', '');
                                         let dataUrlTome: any = '';
-                                        if (dataUrlTomeToClean.indexOf('" data-nom="') > -1) {
-                                            let dataUrlTomeToCleanTmp: any = dataUrlTomeToClean.trim().split('" data-nom="');
-                                            dataUrlTome = dataUrlTomeToCleanTmp[0].replace('"></select>', '');
-                                        } else {
-                                            dataUrlTome = dataUrlTomeToClean.trim().replace('"></select>', '');
+                                        let dataUrlTomeToCleanTmp: any = checkBaseUrl[1].trim().split('data-nom="');
+                                        dataUrlTome = dataUrlTomeToCleanTmp[1].trim().replace('" ></select>', '')
+                                            .replace('" class="flex-item big"></select>', '');
+
+                                        if (dataUrlTome.trim() == '') {
+                                            if (dataUrlTomeToClean.indexOf('" data-nom="') > -1) {
+                                                let dataUrlTomeToCleanTmp: any = dataUrlTomeToClean.trim().split('" data-nom="');
+                                                dataUrlTome = dataUrlTomeToCleanTmp[0].replace('"></select>', '');
+                                            } else {
+                                                dataUrlTome = dataUrlTomeToClean.trim().replace('"></select>', '');
+                                            }
                                         }
-                                        let urlMask: any = '/book/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome + '/';
+                                        let urlMask: any = '/book/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome.replace(/ /g, '-') + '/';
                                         images.urlMask = urlMask;
                                         images.pages = bookPages;
                                         images.order = chapter.order;
@@ -229,59 +219,6 @@ export class JapscanService {
                 );
         });
     }
-
-    /*getMangaChapterImages(chapter) {
-        return new Promise(resolve => {
-            this.http.get(chapter.url)
-                .subscribe(
-                    response => {
-                        let images: any = {};
-                        let body: any = response['_body'];
-                        let elements: any = body.split('<select id="pages" name="pages"');
-                        if (elements.length > 1) {
-                            let pageListToClean: any = elements[1].trim().split('</select>');
-                            let pageList: any = pageListToClean[0].trim().split('data-img="');
-                            let bookPages: any = [];
-                            for(let i = 0; i < pageList.length; i++) {
-                                let pageInfo: any = pageList[i].trim().split('" value="');
-                                if (pageInfo.length > 1) {
-                                    let page: any = pageInfo[0].trim();
-                                    if (page.substr(0, 4) != 'IMG_') {
-                                        bookPages.push(page);
-                                    }
-                                }
-                            }
-                            if (bookPages.length > 0) {
-                                let baseUrlToCleanTmp: any = elements[0].trim().split('<select name="mangas" id="mangas" ');
-                                let baseUrlToClean: any = baseUrlToCleanTmp[1].trim().split('" data-uri="');
-                                let dataUrlNomToClean: any = baseUrlToClean[0];
-                                let dataUrlTomeToClean: any = baseUrlToClean[2];
-                                let dataUrlNom: any = dataUrlNomToClean.trim().replace('data-nom="', '');
-                                let dataUrlTome: any = '';
-                                if (dataUrlTomeToClean.indexOf('" data-nom="') > -1) {
-                                    let dataUrlTomeToCleanTmp: any = dataUrlTomeToClean.trim().split('" data-nom="');
-                                    dataUrlTome = dataUrlTomeToCleanTmp[0].replace('"></select>', '');
-                                } else {
-                                    dataUrlTome = dataUrlTomeToClean.trim().replace('"></select>', '');
-                                }
-                                let urlMask: any = '/book/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome + '/';
-                                images.urlMask = urlMask;
-                                images.pages = bookPages;
-                                images.order = parseInt(dataUrlTome);
-                                resolve(images);
-                            } else {
-                                resolve(false);
-                            }
-                        } else {
-                            resolve(false);
-                        }
-                    },
-                    err => {
-                        resolve(false);
-                    }
-                );
-        });
-    }*/
 
     makePdfChapter(images) {
         return new Promise(resolve => {
@@ -313,7 +250,7 @@ export class JapscanService {
     makePdfTome() {
         return new Promise(resolve => {
             this.getImages().subscribe(imagesTome => {
-                console.log(imagesTome);
+                //console.log(imagesTome);
                 let images: any = imagesTome;
                 images.sort(function (a, b) {
                     return a.order - b.order;
