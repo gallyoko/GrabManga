@@ -13,7 +13,6 @@ import { MangaDownloadPage } from '../pages/manga/manga.download';
 import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 
 import { JapscanService } from '../providers/japscan-service';
-import { MangaService } from '../providers/manga-service';
 import { CommonService } from '../providers/common-service';
 
 import { StatusBar } from '@ionic-native/status-bar';
@@ -51,7 +50,6 @@ import { FileOpener } from '@ionic-native/file-opener';
       SplashScreen,
       Toast,
       SpinnerDialog,
-      MangaService,
       CommonService,
       JapscanService,
       {provide: ErrorHandler, useClass: IonicErrorHandler},

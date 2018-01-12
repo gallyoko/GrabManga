@@ -57,7 +57,7 @@ export class CommonService {
     if (this.platform.is('cordova')) {
       pdfObj.getBuffer((buffer) => {
         var blob = new Blob([buffer], { type: 'application/pdf' });
-        this.file.writeFile(this.file.dataDirectory, name+'.pdf', blob, { replace: true }).then(fileEntry => {
+        this.file.writeFile(this.file.dataDirectory, name+'.pdf', blob, { replace: true }).then(() => {
           this.fileOpener.open(this.file.dataDirectory + name+'.pdf', 'application/pdf');
         })
       });

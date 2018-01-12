@@ -7,7 +7,7 @@ import { MangaDownloadPage } from './manga.download';
 @Component({
     selector: 'page-manga-info',
     templateUrl: 'manga.info.html',
-    providers: [CommonService]
+    providers: [CommonService, JapscanService]
 })
 export class MangaInfoPage {
 
