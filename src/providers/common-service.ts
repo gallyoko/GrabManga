@@ -41,7 +41,7 @@ export class CommonService {
     if (this.platform.is('cordova')) {
       this.toast.show(message, "short", "bottom").subscribe(
           toast => {
-            console.log(toast);
+            //console.log(toast);
           }
       );
     } else {
@@ -62,8 +62,8 @@ export class CommonService {
                   let filenameTmp1: any = name.replace(/ /g, '_');
                   let filenameTmp2: any = filenameTmp1.replace(/'/g, '_');
                   let filename: any = filenameTmp2.replace(/:/g, '_');
-                  this.file.writeFile(this.file.dataDirectory, filename+'.pdf', blob, { replace: true }).then(() => {
-                      this.fileOpener.open(this.file.dataDirectory + filename+'.pdf', 'application/pdf');
+                  this.file.writeFile(this.file.externalRootDirectory+'Download/', filename+'.pdf', blob, { replace: true }).then(() => {
+                      this.fileOpener.open(this.file.externalRootDirectory+'Download/' + filename+'.pdf', 'application/pdf');
                       resolve(true);
                   })
               });

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ActionSheetController, AlertController, Platform } from 'ionic-angular';
+import { NavController, ActionSheetController, AlertController, Platform } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { ActionSheet, ActionSheetOptions } from '@ionic-native/action-sheet';
 import { Dialogs } from '@ionic-native/dialogs';
@@ -75,7 +75,7 @@ export class FavoritePage {
             buttons: [
                 {
                     text: 'Voir les téléchargements',
-                    icon: 'md-information-circle',
+                    icon: 'cloud-download',
                     handler: () => {
                         this.openDownloadPage(favorite);
                     }
