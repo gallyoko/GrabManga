@@ -20,6 +20,9 @@ export class MangaDownloadPage {
     private isStep1: any = false;
     private isStep2: any = false;
     private isStep2Finish: any = false;
+    private downloadError: any = false;
+    private pdfFilename: any = '';
+    private pdfPath: any = '';
 
     constructor(public params: NavParams,
                 public viewCtrl: ViewController, public commonService: CommonService,
@@ -46,6 +49,7 @@ export class MangaDownloadPage {
     }
 
     loadChapters() {
+        this.resetDownloadResult();
         this.chapters = this.manga.tomes[this.tomeIndex].chapters;
         if (this.chapters.length > 0) {
             this.showChapters = true;
@@ -56,10 +60,16 @@ export class MangaDownloadPage {
 
     downloadTome() {
         if (this.tomeIndex) {
-            this.commonService.loadingShow('Veuillez patienter... Génération du PDF depuis les images du dépôt...');
+            this.isStep2Finish = false;
+            this.isDownload = true;
+            this.showResultDownload = true;
+            this.isStep1 = true;
+            this.isStep2 = false;
+            this.downloadError = false;
             this.japscanService.getMangaTomeImages(this.manga.tomes[this.tomeIndex]).subscribe(imagesToOrder => {
                 if (imagesToOrder) {
                     this.japscanService.makePdfTome().then(pdf => {
+                        this.isStep1 = false;
                         this.commonService.loadingHide();
                         let name: string = '';
                         if (this.manga.tomes[this.tomeIndex].title == '') {
@@ -68,13 +78,20 @@ export class MangaDownloadPage {
                             name = this.manga.title + '_' +
                                 this.manga.tomes[this.tomeIndex].title;
                         }
-                        this.commonService.loadingShow('Veuillez patienter... Ecriture du PDF dans le dossier de destination...');
-                        this.commonService.downloadPdf(name, pdf).then(() => {
-                            this.commonService.loadingHide();
+                        this.isStep2 = true;
+                        this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
+                            this.pdfFilename = pathAndName['name']+'.pdf';
+                            this.pdfPath = pathAndName['path'];
+                            this.isStep2Finish = true;
+                            this.isStep2 = false;
+                            this.isDownload = false;
                         });
                     });
+                } else {
+                    this.isStep1 = false;
+                    this.isDownload = false;
+                    this.downloadError = true;
                 }
-
             });
         } else {
             this.commonService.toastShow('Veuillez sélectionner un tome.');
@@ -88,26 +105,33 @@ export class MangaDownloadPage {
             this.showResultDownload = true;
             this.isStep1 = true;
             this.isStep2 = false;
-            //this.commonService.loadingShow('Veuillez patienter... Génération du PDF depuis les images du dépôt...');
             this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).subscribe(images => {
                 this.japscanService.makePdfChapter(images).then(pdf => {
-                    //this.commonService.loadingHide();
                     this.isStep1 = false;
                     const name: string = this.manga.title + '_' +
                         this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
-                    //this.commonService.loadingShow('Veuillez patienter... Ecriture du PDF dans le dossier de destination...');
                     this.isStep2 = true;
-                    this.commonService.downloadPdf(name, pdf).then(() => {
+                    this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
+                        this.pdfFilename = pathAndName['name']+'.pdf';
+                        this.pdfPath = pathAndName['path'];
                         this.isStep2Finish = true;
                         this.isStep2 = false;
                         this.isDownload = false;
-                        //this.commonService.loadingHide();
                     });
                 });
             });
         } else {
             this.commonService.toastShow('Veuillez sélectionner un chapitre.');
         }
+    }
+
+    resetDownloadResult() {
+        this.isStep2Finish = false;
+        this.isDownload = false;
+        this.showResultDownload = false;
+        this.isStep1 = false;
+        this.isStep2 = false;
+        this.downloadError = false;
     }
 
     dismiss() {

@@ -56,20 +56,23 @@ export class CommonService {
 
   downloadPdf(name, pdfObj) {
       return new Promise(resolve => {
+          let path: any = 'votre dossier de téléchargement';
           if (this.platform.is('cordova')) {
               pdfObj.getBuffer((buffer) => {
                   var blob = new Blob([buffer], { type: 'application/pdf' });
                   let filenameTmp1: any = name.replace(/ /g, '_');
                   let filenameTmp2: any = filenameTmp1.replace(/'/g, '_');
                   let filename: any = filenameTmp2.replace(/:/g, '_');
+                  path = this.file.externalRootDirectory+'Download/';
                   this.file.writeFile(this.file.externalRootDirectory+'Download/', filename+'.pdf', blob, { replace: true }).then(() => {
                       this.fileOpener.open(this.file.externalRootDirectory+'Download/' + filename+'.pdf', 'application/pdf');
-                      resolve(true);
+                      //this.toastShow(filename+'.pdf téléchargé sous ' + this.file.externalRootDirectory+'Download/');
+                      resolve({'path': path, 'name': filename});
                   })
               });
           } else {
               pdfObj.download(name+'.pdf');
-              resolve(true);
+              resolve({'path': path, 'name': name});
           }
       });
   }
