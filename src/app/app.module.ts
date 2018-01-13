@@ -9,6 +9,7 @@ import { HomePage } from '../pages/home/home';
 import { MangaPage } from '../pages/manga/manga';
 import { MangaInfoPage } from '../pages/manga/manga.info';
 import { MangaDownloadPage } from '../pages/manga/manga.download';
+import { FavoritePage } from '../pages/favorite/favorite';
 
 import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
 
@@ -22,6 +23,8 @@ import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { File } from '@ionic-native/file';
 import { FileOpener } from '@ionic-native/file-opener';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { ActionSheet } from '@ionic-native/action-sheet';
+import { Dialogs } from '@ionic-native/dialogs';
 
 @NgModule({
   declarations: [
@@ -30,6 +33,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
       MangaPage,
       MangaInfoPage,
       MangaDownloadPage,
+      FavoritePage,
       ProgressBarComponent
   ],
   imports: [
@@ -44,7 +48,8 @@ import { NativeStorage } from '@ionic-native/native-storage';
       HomePage,
       MangaPage,
       MangaInfoPage,
-      MangaDownloadPage
+      MangaDownloadPage,
+      FavoritePage
   ],
   providers: [
       StatusBar,
@@ -56,7 +61,9 @@ import { NativeStorage } from '@ionic-native/native-storage';
       {provide: ErrorHandler, useClass: IonicErrorHandler},
       File,
       FileOpener,
-      NativeStorage
+      NativeStorage,
+      ActionSheet,
+      Dialogs
   ]
 })
 export class AppModule {}

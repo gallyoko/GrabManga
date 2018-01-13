@@ -10,22 +10,41 @@ import { MangaDownloadPage } from './manga.download';
     providers: [CommonService, JapscanService]
 })
 export class MangaInfoPage {
-
     private manga:any = {};
+    private titleIsFavorite:any = false;
 
     constructor(private navCtrl: NavController, private modalCtrl: ModalController,
                 private params: NavParams, private commonService: CommonService,
                 private japscanService: JapscanService) {
         this.manga = this.params.get('manga');
+        this.checkFavorite();
         this.showMangaInfo();
     }
 
     ionViewDidEnter () {}
 
+    checkFavorite() {
+        this.titleIsFavorite = false;
+        this.commonService.checkFavorite(this.manga).then(exist => {
+            this.titleIsFavorite = exist;
+        });
+    }
+
     showMangaInfo() {
         this.commonService.loadingShow('Please wait...');
         this.japscanService.getMangaTomeAndChapter(this.manga).then(manga => {
             this.commonService.loadingHide();
+        });
+    }
+
+    addToFavorite() {
+        this.commonService.setFavorite(this.manga).then(setFavorite => {
+            if (setFavorite) {
+                this.titleIsFavorite = true;
+                this.commonService.toastShow('Le titre a été ajouté aux favoris.');
+            } else {
+                this.commonService.toastShow("Erreur : impossible d'ajouter le titre aux favoris.");
+            }
         });
     }
 

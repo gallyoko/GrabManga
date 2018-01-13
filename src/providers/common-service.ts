@@ -156,14 +156,29 @@ export class CommonService {
             let favoritesToSave:any = [];
             if (favorites) {
                 favoritesToSave = favorites;
-                let indexToDelete:any = favoritesToSave.indexOf(favorite);
-                if (indexToDelete > -1 ) {
-                    favoritesToSave.splice(indexToDelete, 1);
+                for(let i = 0; i < favorites.length; i++) {
+                    if (favorite.title == favorites[i].title) {
+                        favoritesToSave.splice(i, 1);
+                    }
                 }
             }
             return this.setFavorites(favoritesToSave).then(setFavorites => {
                 return setFavorites;
             });
+        });
+    }
+
+    checkFavorite(favorite) {
+        return this.getFavorites().then(favorites => {
+            if (!favorites) {
+                return false;
+            }
+            for(let i = 0; i < favorites.length; i++) {
+                if (favorite.title == favorites[i].title) {
+                    return true;
+                }
+            }
+            return false;
         });
     }
 }
