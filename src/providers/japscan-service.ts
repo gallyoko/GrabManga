@@ -226,24 +226,43 @@ export class JapscanService {
         });
     }
 
-    makePdfChapter(images) {
+    makePdfChapter(images, title) {
         return new Promise(resolve => {
             const content: any = [];
             const contentToOrder: any = [];
+            let countOrientationPortrait: number = 0;
+            let countOrientationLandscape: number = 0;
             for(let i = 0; i < images.pages.length; i++) {
                 this.getBase64ImageFromURL(images.urlMask + images.pages[i]).subscribe(base64data => {
-                    contentToOrder.push({'order': i, 'value': base64data});
+                    contentToOrder.push({'order': i, 'value': base64data.image64, 'orientation': base64data.orientation});
+                    if (base64data.orientation == 'portrait') {
+                        countOrientationPortrait++;
+                    } else {
+                        countOrientationLandscape++;
+                    }
                     if (contentToOrder.length == images.pages.length) {
                         contentToOrder.sort(function (a, b) {
                             return a.order - b.order;
                         });
+                        let pageOrientation: any;
+                        if (countOrientationPortrait >= countOrientationLandscape) {
+                            pageOrientation = 'portrait';
+                        } else {
+                            pageOrientation = 'landscape';
+                        }
                         for(let j = 0; j < contentToOrder.length; j++) {
-                            content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: 500});
+                            if (countOrientationPortrait >= countOrientationLandscape) {
+                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: 565, height: 800});
+                            } else {
+                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: 800, height: 565});
+                            }
                             if (content.length == contentToOrder.length) {
                                 var docDefinition = {
+                                    pageMargins: [ 5, 5, 5, 5 ],
+                                    pageOrientation: pageOrientation,
                                     content: content,
                                     info: {
-                                        title: 'test1',
+                                        title: title,
                                         author: 'Gallyoko'
                                     },
                                 };
@@ -257,7 +276,7 @@ export class JapscanService {
         });
     }
 
-    makePdfTome() {
+    makePdfTome(title) {
         return new Promise(resolve => {
             this.getImages().subscribe(imagesTome => {
                 let images: any = imagesTome;
@@ -274,18 +293,41 @@ export class JapscanService {
                         allUrl.push(images[k].urlMask + images[k].pages[i]);
                     }
                 }
+                let countOrientationPortrait: number = 0;
+                let countOrientationLandscape: number = 0;
                 for(let j = 0; j < allUrl.length; j++) {
                     this.getBase64ImageFromURL(allUrl[j]).subscribe(base64data => {
-                        contentToOrder.push({'order': j, 'value': base64data});
+                        contentToOrder.push({'order': j, 'value': base64data.image64, 'orientation': base64data.orientation});
+                        if (base64data.orientation == 'portrait') {
+                            countOrientationPortrait++;
+                        } else {
+                            countOrientationLandscape++;
+                        }
                         if (contentToOrder.length == allUrl.length) {
                             contentToOrder.sort(function (a, b) {
                                 return a.order - b.order;
                             });
+                            let pageOrientation: any;
+                            if (countOrientationPortrait >= countOrientationLandscape) {
+                                pageOrientation = 'portrait';
+                            } else {
+                                pageOrientation = 'landscape';
+                            }
                             for(let l = 0; l < contentToOrder.length; l++) {
-                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: 500});
+                                if (countOrientationPortrait >= countOrientationLandscape) {
+                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: 565, height: 800});
+                                } else {
+                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: 800, height: 565});
+                                }
                                 if (content.length == contentToOrder.length) {
                                     var docDefinition = {
-                                        content: content
+                                        pageMargins: [ 5, 5, 5, 5 ],
+                                        pageOrientation: pageOrientation,
+                                        content: content,
+                                        info: {
+                                            title: title,
+                                            author: 'Gallyoko'
+                                        },
                                     };
                                     this.pdfObj = pdfMake.createPdf(docDefinition);
                                     resolve(this.pdfObj);
@@ -322,9 +364,17 @@ export class JapscanService {
         var canvas = document.createElement("canvas");
         canvas.width = img.width;
         canvas.height = img.height;
+        let orientation: any = 'portrait';
+        if (img.width > img.height) {
+            orientation = 'lanscape';
+        }
         var ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
         var dataURL = canvas.toDataURL("image/png");
-        return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+        const returnValue = {
+            'image64' : dataURL.replace(/^data:image\/(png|jpg);base64,/, ""),
+            'orientation': orientation
+        };
+        return returnValue;
     }
 }

@@ -68,16 +68,15 @@ export class MangaDownloadPage {
             this.downloadError = false;
             this.japscanService.getMangaTomeImages(this.manga.tomes[this.tomeIndex]).subscribe(imagesToOrder => {
                 if (imagesToOrder) {
-                    this.japscanService.makePdfTome().then(pdf => {
+                    let name: string = '';
+                    if (this.manga.tomes[this.tomeIndex].title == '') {
+                        name = this.manga.title + '_tome-' + (this.tomeIndex +1);
+                    } else {
+                        name = this.manga.title + '_' +
+                            this.manga.tomes[this.tomeIndex].title;
+                    }
+                    this.japscanService.makePdfTome(name).then(pdf => {
                         this.isStep1 = false;
-                        this.commonService.loadingHide();
-                        let name: string = '';
-                        if (this.manga.tomes[this.tomeIndex].title == '') {
-                            name = this.manga.title + '_tome-' + (this.tomeIndex +1);
-                        } else {
-                            name = this.manga.title + '_' +
-                                this.manga.tomes[this.tomeIndex].title;
-                        }
                         this.isStep2 = true;
                         this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
                             this.pdfFilename = pathAndName['name']+'.pdf';
@@ -106,10 +105,10 @@ export class MangaDownloadPage {
             this.isStep1 = true;
             this.isStep2 = false;
             this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).subscribe(images => {
-                this.japscanService.makePdfChapter(images).then(pdf => {
+                const name: string = this.manga.title + '_' +
+                    this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
+                this.japscanService.makePdfChapter(images, name).then(pdf => {
                     this.isStep1 = false;
-                    const name: string = this.manga.title + '_' +
-                        this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
                     this.isStep2 = true;
                     this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
                         this.pdfFilename = pathAndName['name']+'.pdf';
