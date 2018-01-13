@@ -21,6 +21,7 @@ import { Toast } from '@ionic-native/toast';
 import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { File } from '@ionic-native/file';
 import { FileOpener } from '@ionic-native/file-opener';
+import { NativeStorage } from '@ionic-native/native-storage';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { FileOpener } from '@ionic-native/file-opener';
       JapscanService,
       {provide: ErrorHandler, useClass: IonicErrorHandler},
       File,
-      FileOpener
+      FileOpener,
+      NativeStorage
   ]
 })
 export class AppModule {}

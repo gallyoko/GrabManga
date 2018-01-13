@@ -51,14 +51,22 @@ export class MangaDownloadPage {
 
     downloadTome() {
         if (this.tomeIndex) {
-            this.commonService.loadingShow('Please wait...');
+            this.commonService.loadingShow('Veuillez patienter... Génération du PDF depuis les images du dépôt...');
             this.japscanService.getMangaTomeImages(this.manga.tomes[this.tomeIndex]).subscribe(imagesToOrder => {
                 if (imagesToOrder) {
                     this.japscanService.makePdfTome().then(pdf => {
-                        const name: string = this.manga.title + '_' +
-                            this.manga.tomes[this.tomeIndex].title;
-                        this.commonService.downloadPdf(name, pdf);
                         this.commonService.loadingHide();
+                        let name: string = '';
+                        if (this.manga.tomes[this.tomeIndex].title == '') {
+                            name = this.manga.title + '_tome-' + (this.tomeIndex +1);
+                        } else {
+                            name = this.manga.title + '_' +
+                                this.manga.tomes[this.tomeIndex].title;
+                        }
+                        this.commonService.loadingShow('Veuillez patienter... Ecriture du PDF dans le dossier de destination...');
+                        this.commonService.downloadPdf(name, pdf).then(() => {
+                            this.commonService.loadingHide();
+                        });
                     });
                 }
 
@@ -70,13 +78,16 @@ export class MangaDownloadPage {
 
     downloadChapter() {
         if (this.chapterIndex) {
-            this.commonService.loadingShow('Please wait...');
+            this.commonService.loadingShow('Veuillez patienter... Génération du PDF depuis les images du dépôt...');
             this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).subscribe(images => {
                 this.japscanService.makePdfChapter(images).then(pdf => {
+                    this.commonService.loadingHide();
                     const name: string = this.manga.title + '_' +
                         this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
-                    this.commonService.downloadPdf(name, pdf);
-                    this.commonService.loadingHide();
+                    this.commonService.loadingShow('Veuillez patienter... Ecriture du PDF dans le dossier de destination...');
+                    this.commonService.downloadPdf(name, pdf).then(() => {
+                        this.commonService.loadingHide();
+                    });
                 });
             });
         } else {

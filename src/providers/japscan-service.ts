@@ -7,18 +7,25 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import 'rxjs/add/operator/map';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class JapscanService {
     pdfObj = null;
     private images: any = [];
+    private urlApi: any;
+    private urlDepot: any;
 
-    constructor(public http: Http) {}
+    constructor(public http: Http) {
+        this.urlApi = '/api';
+        //this.urlApi = 'http://m.japscan.com';
+        this.urlDepot = '/book';
+        //this.urlDepot = 'http://ww1.japscan.com/lel';
+    }
 
     getMangas() {
         return new Promise(resolve => {
-            this.http.get('/api/mangas/')
+            this.http.get(this.urlApi+'/mangas/')
                 .subscribe(
                     response => {
                         let mangas: any = [];
@@ -34,7 +41,7 @@ export class JapscanService {
                                     if (titleTmp.length > 0 ) {
                                         let manga = new MangaModel(
                                             titleTmp[1],
-                                            '/api'+titleTmp[0].trim()
+                                            this.urlApi + titleTmp[0].trim()
                                         );
                                         mangas.push(manga);
                                     }
@@ -85,7 +92,7 @@ export class JapscanService {
                                     let urlAndTitleChapterToClean: any = chapterList[j].trim().split('">');
                                     if (urlAndTitleChapterToClean.length > 1) {
                                         if (urlAndTitleChapterToClean[0].indexOf('//www.japscan.com/lecture-en-ligne') > -1) {
-                                            let urlChapter: any = '/api/'+urlAndTitleChapterToClean[0].trim().replace('//www.japscan.com', '');
+                                            let urlChapter: any = this.urlApi+'/'+urlAndTitleChapterToClean[0].trim().replace('//www.japscan.com', '');
                                             let titleChapterToClean: any = urlAndTitleChapterToClean[1].trim().replace('</a>\n' +
                                                 '\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</li>', '');
                                             let titleChapter: any = titleChapterToClean.trim().replace('"', '');
@@ -135,7 +142,6 @@ export class JapscanService {
 
     getMangaTomeImages(tome) {
         return Observable.create((observer) => {
-            //console.log(tome.chapters);
             this.images = [];
             for(let i = 0; i < tome.chapters.length; i++) {
                 this.getMangaChapterImages(tome.chapters[i]).subscribe(imagesChapter => {
@@ -195,7 +201,7 @@ export class JapscanService {
                                                 dataUrlTome = dataUrlTomeToClean.trim().replace('"></select>', '');
                                             }
                                         }
-                                        let urlMask: any = '/book/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome.replace(/ /g, '-') + '/';
+                                        let urlMask: any = this.urlDepot + '/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome.replace(/ /g, '-') + '/';
                                         images.urlMask = urlMask;
                                         images.pages = bookPages;
                                         images.order = chapter.order;
@@ -254,7 +260,6 @@ export class JapscanService {
     makePdfTome() {
         return new Promise(resolve => {
             this.getImages().subscribe(imagesTome => {
-                //console.log(imagesTome);
                 let images: any = imagesTome;
                 images.sort(function (a, b) {
                     return a.order - b.order;

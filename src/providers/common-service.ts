@@ -5,6 +5,7 @@ import { SpinnerDialog } from '@ionic-native/spinner-dialog';
 import { Toast } from '@ionic-native/toast';
 import { File } from '@ionic-native/file';
 import { FileOpener } from '@ionic-native/file-opener';
+import { NativeStorage } from '@ionic-native/native-storage';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class CommonService {
   constructor(public app: App, public storage: Storage, public platform: Platform,
               public loadingCtrl: LoadingController, public toastCtrl: ToastController,
               public spinnerDialog: SpinnerDialog, public toast: Toast,
-              private file: File, private fileOpener: FileOpener) {}
+              private file: File, private fileOpener: FileOpener, private nativeStorage: NativeStorage) {}
 
   loadingShow(message) {
     if (this.platform.is('cordova')) {
@@ -54,15 +55,115 @@ export class CommonService {
   }
 
   downloadPdf(name, pdfObj) {
-    if (this.platform.is('cordova')) {
-      pdfObj.getBuffer((buffer) => {
-        var blob = new Blob([buffer], { type: 'application/pdf' });
-        this.file.writeFile(this.file.dataDirectory, name+'.pdf', blob, { replace: true }).then(() => {
-          this.fileOpener.open(this.file.dataDirectory + name+'.pdf', 'application/pdf');
-        })
+      return new Promise(resolve => {
+          if (this.platform.is('cordova')) {
+              pdfObj.getBuffer((buffer) => {
+                  var blob = new Blob([buffer], { type: 'application/pdf' });
+                  let filenameTmp1: any = name.replace(/ /g, '_');
+                  let filenameTmp2: any = filenameTmp1.replace(/'/g, '_');
+                  let filename: any = filenameTmp2.replace(/:/g, '_');
+                  this.file.writeFile(this.file.dataDirectory, filename+'.pdf', blob, { replace: true }).then(() => {
+                      this.fileOpener.open(this.file.dataDirectory + filename+'.pdf', 'application/pdf');
+                      resolve(true);
+                  })
+              });
+          } else {
+              pdfObj.download(name+'.pdf');
+              resolve(true);
+          }
       });
-    } else {
-      pdfObj.download(name+'.pdf');
-    }
   }
+
+  setDownload(download) {
+      if (this.platform.is('cordova')) {
+          return this.nativeStorage.setItem('download', download)
+              .then(
+                  () => {
+                      return Promise.resolve(true);
+                  },
+                  error => {
+                      return Promise.resolve(false);
+                  }
+              );
+      } else {
+          return Promise.resolve(this.storage.set('download', download));
+      }
+  }
+
+  getDownload() {
+      if (this.platform.is('cordova')) {
+          return this.nativeStorage.getItem('download')
+              .then(
+                  data => {
+                      return Promise.resolve(data);
+                  },
+                  error => {
+                      return Promise.resolve(false);
+                  }
+              );
+      } else {
+          return Promise.resolve(this.storage.get('download'));
+      }
+  }
+
+    setFavorites(favorites) {
+        if (this.platform.is('cordova')) {
+            return this.nativeStorage.setItem('favorites', favorites)
+                .then(
+                    () => {
+                        return Promise.resolve(true);
+                    },
+                    error => {
+                        return Promise.resolve(false);
+                    }
+                );
+        } else {
+            return Promise.resolve(this.storage.set('favorites', favorites));
+        }
+    }
+
+    getFavorites() {
+        if (this.platform.is('cordova')) {
+            return this.nativeStorage.getItem('favorites')
+                .then(
+                    data => {
+                        return Promise.resolve(data);
+                    },
+                    error => {
+                        return Promise.resolve(false);
+                    }
+                );
+        } else {
+            return Promise.resolve(this.storage.get('favorites'));
+        }
+    }
+
+    setFavorite(favorite) {
+        return this.getFavorites().then(favorites => {
+            let favoritesToSave:any = [];
+            if (favorites) {
+                favoritesToSave = favorites;
+            }
+            favoritesToSave.push(favorite);
+            return this.setFavorites(favoritesToSave).then(setFavorites => {
+                return setFavorites;
+            });
+        });
+    }
+
+    removeFavorite(favorite) {
+        return this.getFavorites().then(favorites => {
+            let favoritesToSave:any = [];
+            if (favorites) {
+                favoritesToSave = favorites;
+                let indexToDelete:any = favoritesToSave.indexOf(favorite);
+                if (indexToDelete > -1 ) {
+                    favoritesToSave.splice(indexToDelete, 1);
+                }
+            }
+            return this.setFavorites(favoritesToSave).then(setFavorites => {
+                return setFavorites;
+            });
+        });
+    }
 }
