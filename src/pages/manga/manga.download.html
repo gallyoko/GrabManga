@@ -51,5 +51,46 @@
       </ion-grid>
     </ion-item>
   </ion-list>
-
+  <ion-list *ngIf="showResultDownload">
+    <ion-item >
+      <ion-grid>
+        <ion-row>
+          <ion-col col-9>
+            <span *ngIf="isDownload">Téléchargement en cours...</span>
+            <span *ngIf="!isDownload">Téléchargement terminé</span>
+          </ion-col>
+          <ion-col col-3>
+            <ion-icon *ngIf="!isDownload" name="ios-checkmark-circle-outline" class="icon-title"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item >
+      <ion-grid>
+        <ion-row>
+          <ion-col col-9>
+            <span *ngIf="isStep1">Génération du PDF en cours...</span>
+            <span *ngIf="!isStep1">Génération du PDF terminé</span>
+          </ion-col>
+          <ion-col col-3>
+            <ion-icon *ngIf="!isStep1" name="checkmark" class="icon-title"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  <ion-item >
+    <ion-grid>
+      <ion-row>
+        <ion-col col-9>
+          <span *ngIf="isStep2 && !isStep2Finish">Ecriture du PDF en cours...</span>
+          <span *ngIf="!isStep2 && !isStep2Finish">Ecriture du PDF en attente...</span>
+          <span *ngIf="isStep2Finish">Ecriture du PDF terminé</span>
+        </ion-col>
+        <ion-col col-3>
+          <ion-icon *ngIf="isStep2Finish" name="checkmark" class="icon-title"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+  </ion-list>
 </ion-content>

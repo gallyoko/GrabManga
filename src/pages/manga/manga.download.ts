@@ -15,6 +15,11 @@ export class MangaDownloadPage {
     private chapters:any = [];
     private chapterIndex:any;
     private showChapters: any = false;
+    private isDownload: any = false;
+    private showResultDownload: any = false;
+    private isStep1: any = false;
+    private isStep2: any = false;
+    private isStep2Finish: any = false;
 
     constructor(public params: NavParams,
                 public viewCtrl: ViewController, public commonService: CommonService,
@@ -78,15 +83,25 @@ export class MangaDownloadPage {
 
     downloadChapter() {
         if (this.chapterIndex) {
-            this.commonService.loadingShow('Veuillez patienter... Génération du PDF depuis les images du dépôt...');
+            this.isStep2Finish = false;
+            this.isDownload = true;
+            this.showResultDownload = true;
+            this.isStep1 = true;
+            this.isStep2 = false;
+            //this.commonService.loadingShow('Veuillez patienter... Génération du PDF depuis les images du dépôt...');
             this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).subscribe(images => {
                 this.japscanService.makePdfChapter(images).then(pdf => {
-                    this.commonService.loadingHide();
+                    //this.commonService.loadingHide();
+                    this.isStep1 = false;
                     const name: string = this.manga.title + '_' +
                         this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
-                    this.commonService.loadingShow('Veuillez patienter... Ecriture du PDF dans le dossier de destination...');
+                    //this.commonService.loadingShow('Veuillez patienter... Ecriture du PDF dans le dossier de destination...');
+                    this.isStep2 = true;
                     this.commonService.downloadPdf(name, pdf).then(() => {
-                        this.commonService.loadingHide();
+                        this.isStep2Finish = true;
+                        this.isStep2 = false;
+                        this.isDownload = false;
+                        //this.commonService.loadingHide();
                     });
                 });
             });
