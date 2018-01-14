@@ -1,6 +1,7 @@
 export class MangaModel{
     title: string;
     url: string;
+    cover: string;
     synopsis: string = '';
     tomes: any = [];
 

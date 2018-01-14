@@ -7,6 +7,10 @@
   },
   "proxies": [
     {
+      "path": "/images",
+      "proxyUrl": "https://www.google.fr"
+    },
+    {
       "path": "/book",
       "proxyUrl": "http://ww1.japscan.com/lel"
     },

@@ -15,12 +15,15 @@ export class JapscanService {
     private images: any = [];
     private urlApi: any;
     private urlDepot: any;
+    private urlImage: any;
 
     constructor(public http: Http) {
         this.urlApi = '/api';
         //this.urlApi = 'http://m.japscan.com';
         this.urlDepot = '/book';
         //this.urlDepot = 'http://ww1.japscan.com/lel';
+        this.urlImage = '/images';
+        //this.urlImage = 'https://www.google.fr';
     }
 
     getMangas() {
@@ -376,5 +379,28 @@ export class JapscanService {
             'orientation': orientation
         };
         return returnValue;
+    }
+
+    getGoogleImages(title) {
+        return new Promise(resolve => {
+            this.http.get(this.urlImage+'/search?q='+title.replace(' ', '+')+'&tbm=isch')
+                .subscribe(
+                    response => {
+                        let imgLinks: any = [];
+                        let body: any = response['_body'];
+                        let elements: any = body.split('src="https://encrypted-tbn0.gstatic.com/images?q=tbn:');
+                        elements.splice((elements.length -1), 1);
+                        elements.splice(0, 1);
+                        for(let i = 0; i < elements.length; i++) {
+                            let linkTemp: any = elements[i].split('" data-sz=');
+                            imgLinks.push('https://encrypted-tbn0.gstatic.com/images?q=tbn:'+linkTemp[0].trim());
+                        }
+                        resolve(imgLinks);
+                    },
+                    err => {
+                        resolve(false);
+                    }
+                );
+        });
     }
 }

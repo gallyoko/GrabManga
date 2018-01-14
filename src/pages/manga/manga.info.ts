@@ -12,6 +12,7 @@ import { MangaDownloadPage } from './manga.download';
 export class MangaInfoPage {
     private manga:any = {};
     private titleIsFavorite:any = false;
+    private waitCover: any = true;
 
     constructor(private navCtrl: NavController, private modalCtrl: ModalController,
                 private params: NavParams, private commonService: CommonService,
@@ -21,7 +22,13 @@ export class MangaInfoPage {
         this.showMangaInfo();
     }
 
-    ionViewDidEnter () {}
+    ionViewDidEnter () {
+        this.waitCover = true;
+        this.japscanService.getGoogleImages(this.manga.title + ' affiche').then(covers => {
+            this.manga.cover = covers[1];
+            this.waitCover = false;
+        });
+    }
 
     checkFavorite() {
         this.titleIsFavorite = false;
