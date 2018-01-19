@@ -11,7 +11,7 @@ import { JapscanService } from '../../providers/japscan-service';
 export class MangaDownloadPage {
 
     private manga:any = {};
-    private tomeIndex:any;
+    private tomeIndex:any = 0;
     private chapters:any = [];
     private chapterIndex:any;
     private showChapters: any = false;

@@ -16,6 +16,8 @@ export class JapscanService {
     private urlApi: any;
     private urlDepot: any;
     private urlImage: any;
+    private witdhImage: any;
+    private heightImage: any;
 
     constructor(public http: Http) {
         this.urlApi = '/api';
@@ -24,6 +26,8 @@ export class JapscanService {
         //this.urlDepot = 'http://ww1.japscan.com/lel';
         this.urlImage = '/images';
         //this.urlImage = 'https://www.google.fr';
+        this.witdhImage = 560;
+        this.heightImage = 840;
     }
 
     getMangas() {
@@ -233,33 +237,27 @@ export class JapscanService {
         return new Promise(resolve => {
             const content: any = [];
             const contentToOrder: any = [];
-            let countOrientationPortrait: number = 0;
-            let countOrientationLandscape: number = 0;
             for(let i = 0; i < images.pages.length; i++) {
                 this.getBase64ImageFromURL(images.urlMask + images.pages[i]).subscribe(base64data => {
-                    contentToOrder.push({'order': i, 'value': base64data.image64, 'orientation': base64data.orientation});
-                    if (base64data.orientation == 'portrait') {
-                        countOrientationPortrait++;
-                    } else {
-                        countOrientationLandscape++;
-                    }
+                    contentToOrder.push({'order': i, 'value': base64data.image64, 'width': base64data.width, 'height': base64data.height});
                     if (contentToOrder.length == images.pages.length) {
                         contentToOrder.sort(function (a, b) {
                             return a.order - b.order;
                         });
-                        let pageOrientation: any;
-                        if (countOrientationPortrait >= countOrientationLandscape) {
-                            pageOrientation = 'portrait';
-                        } else {
-                            pageOrientation = 'landscape';
-                        }
+                        let countOrientationPortrait: number = 0;
+                        let countOrientationLandscape: number = 0;
                         for(let j = 0; j < contentToOrder.length; j++) {
-                            if (countOrientationPortrait >= countOrientationLandscape) {
-                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: 565, height: 800});
+                            content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: contentToOrder[j].width, height: contentToOrder[j].height});
+                            if (contentToOrder[j].width > contentToOrder[j].height) {
+                                countOrientationLandscape++;
                             } else {
-                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: 800, height: 565});
+                                countOrientationPortrait++;
                             }
                             if (content.length == contentToOrder.length) {
+                                let pageOrientation: any = 'portrait';
+                                if (countOrientationLandscape > countOrientationPortrait) {
+                                    pageOrientation = 'landscape';
+                                }
                                 var docDefinition = {
                                     pageMargins: [ 5, 5, 5, 5 ],
                                     pageOrientation: pageOrientation,
@@ -296,36 +294,31 @@ export class JapscanService {
                         allUrl.push(images[k].urlMask + images[k].pages[i]);
                     }
                 }
-                let countOrientationPortrait: number = 0;
-                let countOrientationLandscape: number = 0;
                 for(let j = 0; j < allUrl.length; j++) {
                     this.getBase64ImageFromURL(allUrl[j]).subscribe(base64data => {
-                        contentToOrder.push({'order': j, 'value': base64data.image64, 'orientation': base64data.orientation});
-                        if (base64data.orientation == 'portrait') {
-                            countOrientationPortrait++;
-                        } else {
-                            countOrientationLandscape++;
-                        }
+                        contentToOrder.push({'order': j, 'value': base64data.image64, 'width': base64data.width, 'height': base64data.height});
                         if (contentToOrder.length == allUrl.length) {
                             contentToOrder.sort(function (a, b) {
                                 return a.order - b.order;
                             });
-                            let pageOrientation: any;
-                            if (countOrientationPortrait >= countOrientationLandscape) {
-                                pageOrientation = 'portrait';
-                            } else {
-                                pageOrientation = 'landscape';
-                            }
+                            let countOrientationPortrait: number = 0;
+                            let countOrientationLandscape: number = 0;
                             for(let l = 0; l < contentToOrder.length; l++) {
-                                if (countOrientationPortrait >= countOrientationLandscape) {
-                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: 565, height: 800});
+                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: contentToOrder[l].width, height: contentToOrder[l].height});
+                                if (contentToOrder[l].width > contentToOrder[l].height) {
+                                    countOrientationLandscape++;
                                 } else {
-                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: 800, height: 565});
+                                    countOrientationPortrait++;
                                 }
                                 if (content.length == contentToOrder.length) {
+                                    let pageOrientation: any = 'portrait';
+                                    if (countOrientationLandscape > countOrientationPortrait) {
+                                        pageOrientation = 'landscape';
+                                    }
                                     var docDefinition = {
-                                        pageMargins: [ 5, 5, 5, 5 ],
+                                        pageSize: 'A4',
                                         pageOrientation: pageOrientation,
+                                        pageMargins: [ 5, 5, 5, 5 ],
                                         content: content,
                                         info: {
                                             title: title,
@@ -365,18 +358,26 @@ export class JapscanService {
 
     getBase64Image(img: HTMLImageElement) {
         var canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        let orientation: any = 'portrait';
+        let width: any = 0;
+        let ratio: any = 0;
         if (img.width > img.height) {
-            orientation = 'lanscape';
+            ratio = this.heightImage / img.width;
+            width = this.heightImage;
+        } else {
+            ratio = this.witdhImage / img.width;
+            width = this.witdhImage;
         }
+        let height: any = img.height * ratio;
         var ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
+        ctx.clearRect(0, 0, width, height);
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
         var dataURL = canvas.toDataURL("image/png");
         const returnValue = {
             'image64' : dataURL.replace(/^data:image\/(png|jpg);base64,/, ""),
-            'orientation': orientation
+            'width': width,
+            'height': height
         };
         return returnValue;
     }

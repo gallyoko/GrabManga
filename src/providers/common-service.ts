@@ -65,7 +65,7 @@ export class CommonService {
                   let filename: any = filenameTmp2.replace(/:/g, '_');
                   path = this.file.externalRootDirectory+'Download/';
                   this.file.writeFile(this.file.externalRootDirectory+'Download/', filename+'.pdf', blob, { replace: true }).then(() => {
-                      //this.fileOpener.open(this.file.externalRootDirectory+'Download/' + filename+'.pdf', 'application/pdf');
+                      this.fileOpener.open(this.file.externalRootDirectory+'Download/' + filename+'.pdf', 'application/pdf');
                       resolve({'path': path.replace('file:/', ''), 'name': filename});
                   })
               });

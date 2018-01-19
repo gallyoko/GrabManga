@@ -20,7 +20,7 @@
   <ion-scroll zooming="true" scrollX="true" class="scrollContent">
     <ion-row nowrap class="scrollSearch">
       <ion-col *ngFor="let pageAlpha of paginatorAlpha">
-        <button  class="scrollItem" ion-button icon-only (click)="getMangasBeginBy(pageAlpha)">
+        <button color="danger" class="scrollItem" ion-button icon-only (click)="getMangasBeginBy(pageAlpha)">
           {{ pageAlpha }}
         </button>
       </ion-col>

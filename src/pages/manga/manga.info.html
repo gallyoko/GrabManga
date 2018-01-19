@@ -8,7 +8,7 @@
     </ion-buttons>
     <ion-buttons right>
       <button ion-button *ngIf="titleIsFavorite">
-        <ion-icon name="md-star" class="navicon" style="font-size: 30px;"></ion-icon>
+        <ion-icon name="md-star" class="navicon" style="font-size: 30px; color: red"></ion-icon>
       </button>
       <button ion-button *ngIf="!titleIsFavorite" (click)="addToFavorite()">
         <ion-icon name="md-star-outline" class="navicon" style="font-size: 30px;"></ion-icon>
@@ -52,7 +52,7 @@
   <ion-list>
     <ion-item>
       Voir les téléchargements
-      <button ion-button (click)="openModal()">
+      <button color="danger" ion-button (click)="openModal()">
         <ion-icon name="cloud-download"></ion-icon>
       </button>
     </ion-item>
