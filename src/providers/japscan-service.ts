@@ -31,7 +31,7 @@ export class JapscanService {
         //this.urlImage = 'https://www.google.fr';
         this.witdhResolutionImage = 560;
         this.heightResolutionImage = 840;
-        this.resize = true;
+        this.resize = false;
         // don't touch after
         this.witdhPage = 560;
         this.heightPage = 840;
@@ -241,8 +241,9 @@ export class JapscanService {
         });
     }
 
-    makePdfChapter(images, title) {
+    makePdfChapter(images, title, compression=false) {
         return new Promise(resolve => {
+            this.resize = compression;
             const content: any = [];
             const contentToOrder: any = [];
             for(let i = 0; i < images.pages.length; i++) {
@@ -296,8 +297,9 @@ export class JapscanService {
         });
     }
 
-    makePdfTome(title) {
+    makePdfTome(title, compression=false) {
         return new Promise(resolve => {
+            this.resize = compression;
             this.getImages().subscribe(imagesTome => {
                 let images: any = imagesTome;
                 images.sort(function (a, b) {

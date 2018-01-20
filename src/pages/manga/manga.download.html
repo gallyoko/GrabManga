@@ -19,6 +19,10 @@
 <ion-content padding>
   <ion-list>
     <ion-item>
+      <ion-label>Compression</ion-label>
+      <ion-toggle color="danger" [(ngModel)]="compressionMode"></ion-toggle>
+    </ion-item>
+    <ion-item>
       <ion-label>Tome</ion-label>
       <ion-select [(ngModel)]="tomeIndex" submitText="Ok" cancelText="Cancel" (ngModelChange)="loadChapters()">
         <ion-option *ngFor="let tome of manga.tomes; let i = index" value="{{i}}">{{tome.title}}</ion-option>

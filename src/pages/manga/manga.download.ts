@@ -23,6 +23,7 @@ export class MangaDownloadPage {
     private downloadError: any = false;
     private pdfFilename: any = '';
     private pdfPath: any = '';
+    private compressionMode: any = false;
 
     constructor(public params: NavParams,
                 public viewCtrl: ViewController, public commonService: CommonService,
@@ -75,7 +76,7 @@ export class MangaDownloadPage {
                         name = this.manga.title + '_' +
                             this.manga.tomes[this.tomeIndex].title;
                     }
-                    this.japscanService.makePdfTome(name).then(pdf => {
+                    this.japscanService.makePdfTome(name, this.compressionMode).then(pdf => {
                         this.isStep1 = false;
                         this.isStep2 = true;
                         this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
@@ -110,7 +111,7 @@ export class MangaDownloadPage {
             this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).subscribe(images => {
                 const name: string = this.manga.title + '_' +
                     this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
-                this.japscanService.makePdfChapter(images, name).then(pdf => {
+                this.japscanService.makePdfChapter(images, name, this.compressionMode).then(pdf => {
                     this.isStep1 = false;
                     this.isStep2 = true;
                     this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
