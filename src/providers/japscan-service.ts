@@ -16,8 +16,11 @@ export class JapscanService {
     private urlApi: any;
     private urlDepot: any;
     private urlImage: any;
-    private witdhImage: any;
-    private heightImage: any;
+    private witdhResolutionImage: any;
+    private heightResolutionImage: any;
+    private resize: any;
+    private witdhPage: any;
+    private heightPage: any;
 
     constructor(public http: Http) {
         this.urlApi = '/api';
@@ -26,8 +29,13 @@ export class JapscanService {
         //this.urlDepot = 'http://ww1.japscan.com/lel';
         this.urlImage = '/images';
         //this.urlImage = 'https://www.google.fr';
-        this.witdhImage = 560;
-        this.heightImage = 840;
+        this.witdhResolutionImage = 560;
+        this.heightResolutionImage = 840;
+        this.resize = true;
+        // don't touch after
+        this.witdhPage = 560;
+        this.heightPage = 840;
+
     }
 
     getMangas() {
@@ -247,11 +255,22 @@ export class JapscanService {
                         let countOrientationPortrait: number = 0;
                         let countOrientationLandscape: number = 0;
                         for(let j = 0; j < contentToOrder.length; j++) {
-                            content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: contentToOrder[j].width, height: contentToOrder[j].height});
+                            let orientationPortrait: any = true;
                             if (contentToOrder[j].width > contentToOrder[j].height) {
                                 countOrientationLandscape++;
+                                orientationPortrait = false;
                             } else {
                                 countOrientationPortrait++;
+                            }
+                            if (this.resize) {
+                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: contentToOrder[j].width, height: contentToOrder[j].height});
+
+                            } else {
+                                if (orientationPortrait) {
+                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: this.witdhPage, height: this.heightPage});
+                                } else {
+                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: this.heightPage, height: this.witdhPage});
+                                }
                             }
                             if (content.length == contentToOrder.length) {
                                 let pageOrientation: any = 'portrait';
@@ -304,11 +323,21 @@ export class JapscanService {
                             let countOrientationPortrait: number = 0;
                             let countOrientationLandscape: number = 0;
                             for(let l = 0; l < contentToOrder.length; l++) {
-                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: contentToOrder[l].width, height: contentToOrder[l].height});
+                                let orientationPortrait: any = true;
                                 if (contentToOrder[l].width > contentToOrder[l].height) {
+                                    orientationPortrait = false;
                                     countOrientationLandscape++;
                                 } else {
                                     countOrientationPortrait++;
+                                }
+                                if (this.resize) {
+                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: contentToOrder[l].width, height: contentToOrder[l].height});
+                                } else {
+                                    if (orientationPortrait) {
+                                        content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: this.witdhPage, height: this.heightPage});
+                                    } else {
+                                        content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: this.heightPage, height: this.witdhPage});
+                                    }
                                 }
                                 if (content.length == contentToOrder.length) {
                                     let pageOrientation: any = 'portrait';
@@ -361,13 +390,13 @@ export class JapscanService {
         let width: any = 0;
         let ratio: any = 0;
         let height: any = 0;
-        if (this.heightImage && this.witdhImage) {
+        if (this.resize) {
             if (img.width > img.height) {
-                ratio = this.heightImage / img.width;
-                width = this.heightImage;
+                ratio = this.heightResolutionImage / img.width;
+                width = this.heightResolutionImage;
             } else {
-                ratio = this.witdhImage / img.width;
-                width = this.witdhImage;
+                ratio = this.witdhResolutionImage / img.width;
+                width = this.witdhResolutionImage;
             }
             height = img.height * ratio;
         } else {
