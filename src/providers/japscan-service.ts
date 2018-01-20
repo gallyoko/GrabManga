@@ -360,14 +360,20 @@ export class JapscanService {
         var canvas = document.createElement("canvas");
         let width: any = 0;
         let ratio: any = 0;
-        if (img.width > img.height) {
-            ratio = this.heightImage / img.width;
-            width = this.heightImage;
+        let height: any = 0;
+        if (this.heightImage && this.witdhImage) {
+            if (img.width > img.height) {
+                ratio = this.heightImage / img.width;
+                width = this.heightImage;
+            } else {
+                ratio = this.witdhImage / img.width;
+                width = this.witdhImage;
+            }
+            height = img.height * ratio;
         } else {
-            ratio = this.witdhImage / img.width;
-            width = this.witdhImage;
+            width = img.width;
+            height = img.height;
         }
-        let height: any = img.height * ratio;
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, width, height);
         canvas.width = width;

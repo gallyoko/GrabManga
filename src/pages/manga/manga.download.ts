@@ -11,7 +11,7 @@ import { JapscanService } from '../../providers/japscan-service';
 export class MangaDownloadPage {
 
     private manga:any = {};
-    private tomeIndex:any = 0;
+    private tomeIndex:any;
     private chapters:any = [];
     private chapterIndex:any;
     private showChapters: any = false;
@@ -104,6 +104,9 @@ export class MangaDownloadPage {
             this.showResultDownload = true;
             this.isStep1 = true;
             this.isStep2 = false;
+            if (!this.tomeIndex) {
+                this.tomeIndex = 0;
+            }
             this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).subscribe(images => {
                 const name: string = this.manga.title + '_' +
                     this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
