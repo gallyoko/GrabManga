@@ -24,12 +24,40 @@ export class MangaDownloadPage {
     private pdfFilename: any = '';
     private pdfPath: any = '';
     private compressionMode: any = false;
+    private countImages: any;
+    private currentImage: any;
+    private progress: any;
 
     constructor(public params: NavParams,
-                public viewCtrl: ViewController, public commonService: CommonService,
-                public japscanService: JapscanService) {
+                public viewCtrl: ViewController, private commonService: CommonService,
+                private japscanService: JapscanService) {
         this.manga = this.params.get('manga');
+        this.progress = 0;
+        this.currentImage = 0;
+        this.countImages = 0;
         this.loadChaptersInit();
+        this.japscanService.getCurrentPagePdf()
+            .subscribe((res) => {
+                if (this.isDownload) {
+                    if (this.countImages > 0) {
+                        this.currentImage = res;
+                        const progress: any = (this.currentImage/this.countImages)*100;
+                        this.progress = parseInt(progress);
+                    }
+                }
+            });
+    }
+
+    ionViewDidEnter () {
+        this.progress = 0;
+        this.currentImage = 0;
+        this.countImages = 0;
+    }
+
+    ionViewDidLeave () {
+        this.progress = 0;
+        this.currentImage = 0;
+        this.countImages = 0;
     }
 
     loadChaptersInit() {
@@ -69,6 +97,7 @@ export class MangaDownloadPage {
             this.downloadError = false;
             this.japscanService.getMangaTomeImages(this.manga.tomes[this.tomeIndex]).subscribe(imagesToOrder => {
                 if (imagesToOrder) {
+                    this.countImages = imagesToOrder.length;
                     let name: string = '';
                     if (this.manga.tomes[this.tomeIndex].title == '') {
                         name = this.manga.title + '_tome-' + (this.tomeIndex +1);
@@ -79,6 +108,8 @@ export class MangaDownloadPage {
                     this.japscanService.makePdfTome(name, this.compressionMode).then(pdf => {
                         this.isStep1 = false;
                         this.isStep2 = true;
+                        this.currentImage = this.countImages;
+                        this.progress = 100;
                         this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
                             this.pdfFilename = pathAndName['name']+'.pdf';
                             this.pdfPath = pathAndName['path'];
@@ -109,11 +140,14 @@ export class MangaDownloadPage {
                 this.tomeIndex = 0;
             }
             this.japscanService.getMangaChapterImages(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex]).subscribe(images => {
+                this.countImages = images.pages.length;
                 const name: string = this.manga.title + '_' +
                     this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
                 this.japscanService.makePdfChapter(images, name, this.compressionMode).then(pdf => {
                     this.isStep1 = false;
                     this.isStep2 = true;
+                    this.currentImage = this.countImages;
+                    this.progress = 100;
                     this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
                         this.pdfFilename = pathAndName['name']+'.pdf';
                         this.pdfPath = pathAndName['path'];
@@ -135,6 +169,9 @@ export class MangaDownloadPage {
         this.isStep1 = false;
         this.isStep2 = false;
         this.downloadError = false;
+        this.progress = 0;
+        this.currentImage = 0;
+        this.countImages = 0;
     }
 
     dismiss() {

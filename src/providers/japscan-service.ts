@@ -8,6 +8,7 @@ import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
+import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 
 @Injectable()
 export class JapscanService {
@@ -21,21 +22,28 @@ export class JapscanService {
     private resize: any;
     private witdhPage: any;
     private heightPage: any;
+    private currentPagePdf: any;
 
     constructor(public http: Http) {
-        this.urlApi = '/api';
-        //this.urlApi = 'http://m.japscan.com';
-        this.urlDepot = '/book';
-        //this.urlDepot = 'http://ww1.japscan.com/lel';
-        this.urlImage = '/images';
-        //this.urlImage = 'https://www.google.fr';
+        //this.urlApi = '/api';
+        this.urlApi = 'http://m.japscan.com';
+        //this.urlDepot = '/book';
+        this.urlDepot = 'http://ww1.japscan.com/lel';
+        //this.urlImage = '/images';
+        this.urlImage = 'https://www.google.fr';
         this.witdhResolutionImage = 560;
         this.heightResolutionImage = 840;
         this.resize = false;
         // don't touch after
         this.witdhPage = 560;
         this.heightPage = 840;
+        this.currentPagePdf = 0;
+    }
 
+    getCurrentPagePdf = () => {
+        return IntervalObservable
+            .create(1000)
+            .map((i) => this.currentPagePdf)
     }
 
     getMangas() {
@@ -243,11 +251,13 @@ export class JapscanService {
 
     makePdfChapter(images, title, compression=false) {
         return new Promise(resolve => {
+            this.currentPagePdf = 0;
             this.resize = compression;
             const content: any = [];
             const contentToOrder: any = [];
             for(let i = 0; i < images.pages.length; i++) {
                 this.getBase64ImageFromURL(images.urlMask + images.pages[i]).subscribe(base64data => {
+                    this.currentPagePdf ++;
                     contentToOrder.push({'order': i, 'value': base64data.image64, 'width': base64data.width, 'height': base64data.height});
                     if (contentToOrder.length == images.pages.length) {
                         contentToOrder.sort(function (a, b) {
@@ -299,6 +309,7 @@ export class JapscanService {
 
     makePdfTome(title, compression=false) {
         return new Promise(resolve => {
+            this.currentPagePdf = 0;
             this.resize = compression;
             this.getImages().subscribe(imagesTome => {
                 let images: any = imagesTome;
@@ -317,6 +328,7 @@ export class JapscanService {
                 }
                 for(let j = 0; j < allUrl.length; j++) {
                     this.getBase64ImageFromURL(allUrl[j]).subscribe(base64data => {
+                        this.currentPagePdf ++;
                         contentToOrder.push({'order': j, 'value': base64data.image64, 'width': base64data.width, 'height': base64data.height});
                         if (contentToOrder.length == allUrl.length) {
                             contentToOrder.sort(function (a, b) {

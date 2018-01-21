@@ -94,6 +94,11 @@
             <i *ngIf="isStep1" class="fa-li fa fa-spinner fa-spin"></i>
           </ion-col>
         </ion-row>
+        <ion-row>
+          <ion-col col-12>
+            <progress-bar [progress]="progress"></progress-bar>
+          </ion-col>
+        </ion-row>
       </ion-grid>
     </ion-item>
     <ion-item >

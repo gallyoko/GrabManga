@@ -11,7 +11,7 @@ import { MangaInfoPage } from '../pages/manga/manga.info';
 import { MangaDownloadPage } from '../pages/manga/manga.download';
 import { FavoritePage } from '../pages/favorite/favorite';
 
-import { ProgressBarComponent } from '../components/progress-bar/progress-bar';
+import { ProgressBarComponent } from '../directives/progress-bar/progress-bar';
 
 import { JapscanService } from '../providers/japscan-service';
 import { CommonService } from '../providers/common-service';
