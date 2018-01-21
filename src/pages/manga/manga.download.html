@@ -86,6 +86,21 @@
       <ion-grid>
         <ion-row>
           <ion-col col-10>
+            <span *ngIf="isStep0">Récupération des urls en cours...</span>
+            <span *ngIf="!isStep0">Récupération des urls terminée</span>
+          </ion-col>
+          <ion-col col-2>
+            <ion-icon *ngIf="!isStep0" name="checkmark" class="icon-title"></ion-icon>
+            <i *ngIf="isStep0" class="fa-li fa fa-spinner fa-spin"></i>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item >
+      <ion-grid>
+        <ion-row>
+          <ion-col col-10>
+            <span *ngIf="isStep0 && !isStep1">Génération du PDF en attente...</span>
             <span *ngIf="isStep1">Génération du PDF en cours...</span>
             <span *ngIf="!isStep1">Génération du PDF terminé</span>
           </ion-col>

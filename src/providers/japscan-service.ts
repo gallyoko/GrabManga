@@ -42,7 +42,7 @@ export class JapscanService {
 
     getCurrentPagePdf = () => {
         return IntervalObservable
-            .create(300)
+            .create(500)
             .map((i) => this.currentPagePdf)
     }
 
@@ -279,6 +279,7 @@ export class JapscanService {
                         if (countOrientationLandscape > countOrientationPortrait) {
                             pageOrientation = 'landscape';
                         }
+                        this.currentPagePdf = images.pages.length;
                         var docDefinition = {
                             pageMargins: [ 5, 5, 5, 5 ],
                             pageOrientation: pageOrientation,
@@ -339,6 +340,7 @@ export class JapscanService {
                             if (countOrientationLandscape > countOrientationPortrait) {
                                 pageOrientation = 'landscape';
                             }
+                            this.currentPagePdf = allUrl.length;
                             var docDefinition = {
                                 pageSize: 'A4',
                                 pageOrientation: pageOrientation,
