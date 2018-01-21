@@ -88,6 +88,8 @@ export class MangaDownloadPage {
     }
 
     downloadTome() {
+        this.currentImage = 0;
+        this.countImages = 0;
         if (this.tomeIndex) {
             this.isStep2Finish = false;
             this.isDownload = true;
@@ -97,25 +99,31 @@ export class MangaDownloadPage {
             this.downloadError = false;
             this.japscanService.getMangaTomeImages(this.manga.tomes[this.tomeIndex]).subscribe(imagesToOrder => {
                 if (imagesToOrder) {
-                    this.countImages = imagesToOrder.length;
-                    let name: string = '';
-                    if (this.manga.tomes[this.tomeIndex].title == '') {
-                        name = this.manga.title + '_tome-' + (this.tomeIndex +1);
-                    } else {
-                        name = this.manga.title + '_' +
-                            this.manga.tomes[this.tomeIndex].title;
-                    }
-                    this.japscanService.makePdfTome(name, this.compressionMode).then(pdf => {
-                        this.isStep1 = false;
-                        this.isStep2 = true;
-                        this.currentImage = this.countImages;
-                        this.progress = 100;
-                        this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
-                            this.pdfFilename = pathAndName['name']+'.pdf';
-                            this.pdfPath = pathAndName['path'];
-                            this.isStep2Finish = true;
-                            this.isStep2 = false;
-                            this.isDownload = false;
+                    this.japscanService.getImages().subscribe(imagesTome => {
+                        let count: number = 0;
+                        for(let k = 0; k < imagesTome.length; k++) {
+                            count = count + imagesTome[k].pages.length;
+                        }
+                        this.countImages = count;
+                        let name: string = '';
+                        if (this.manga.tomes[this.tomeIndex].title == '') {
+                            name = this.manga.title + '_tome-' + (this.tomeIndex +1);
+                        } else {
+                            name = this.manga.title + '_' +
+                                this.manga.tomes[this.tomeIndex].title;
+                        }
+                        this.japscanService.makePdfTome(name, this.compressionMode).then(pdf => {
+                            this.isStep1 = false;
+                            this.isStep2 = true;
+                            this.currentImage = this.countImages;
+                            this.progress = 100;
+                            this.commonService.downloadPdf(name, pdf).then((pathAndName) => {
+                                this.pdfFilename = pathAndName['name']+'.pdf';
+                                this.pdfPath = pathAndName['path'];
+                                this.isStep2Finish = true;
+                                this.isStep2 = false;
+                                this.isDownload = false;
+                            });
                         });
                     });
                 } else {
@@ -130,6 +138,8 @@ export class MangaDownloadPage {
     }
 
     downloadChapter() {
+        this.currentImage = 0;
+        this.countImages = 0;
         if (this.chapterIndex) {
             this.isStep2Finish = false;
             this.isDownload = true;

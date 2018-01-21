@@ -25,12 +25,12 @@ export class JapscanService {
     private currentPagePdf: any;
 
     constructor(public http: Http) {
-        //this.urlApi = '/api';
-        this.urlApi = 'http://m.japscan.com';
-        //this.urlDepot = '/book';
-        this.urlDepot = 'http://ww1.japscan.com/lel';
-        //this.urlImage = '/images';
-        this.urlImage = 'https://www.google.fr';
+        this.urlApi = '/api';
+        //this.urlApi = 'http://m.japscan.com';
+        this.urlDepot = '/book';
+        //this.urlDepot = 'http://ww1.japscan.com/lel';
+        this.urlImage = '/images';
+        //this.urlImage = 'https://www.google.fr';
         this.witdhResolutionImage = 560;
         this.heightResolutionImage = 840;
         this.resize = false;
@@ -42,7 +42,7 @@ export class JapscanService {
 
     getCurrentPagePdf = () => {
         return IntervalObservable
-            .create(1000)
+            .create(300)
             .map((i) => this.currentPagePdf)
     }
 
@@ -254,53 +254,42 @@ export class JapscanService {
             this.currentPagePdf = 0;
             this.resize = compression;
             const content: any = [];
-            const contentToOrder: any = [];
+            let countOrientationPortrait: number = 0;
+            let countOrientationLandscape: number = 0;
             for(let i = 0; i < images.pages.length; i++) {
                 this.getBase64ImageFromURL(images.urlMask + images.pages[i]).subscribe(base64data => {
+                    let orientationPortrait: any = true;
+                    if (base64data.width > base64data.height) {
+                        countOrientationLandscape++;
+                        orientationPortrait = false;
+                    } else {
+                        countOrientationPortrait++;
+                    }
+                    if (orientationPortrait) {
+                        content.push({'order': i, image: 'data:image/jpg;base64,'+base64data.image64, width: this.witdhPage, height: this.heightPage});
+                    } else {
+                        content.push({'order': i, image: 'data:image/jpg;base64,'+base64data.image64, width: this.heightPage, height: this.witdhPage});
+                    }
                     this.currentPagePdf ++;
-                    contentToOrder.push({'order': i, 'value': base64data.image64, 'width': base64data.width, 'height': base64data.height});
-                    if (contentToOrder.length == images.pages.length) {
-                        contentToOrder.sort(function (a, b) {
+                    if (content.length == images.pages.length) {
+                        content.sort(function (a, b) {
                             return a.order - b.order;
                         });
-                        let countOrientationPortrait: number = 0;
-                        let countOrientationLandscape: number = 0;
-                        for(let j = 0; j < contentToOrder.length; j++) {
-                            let orientationPortrait: any = true;
-                            if (contentToOrder[j].width > contentToOrder[j].height) {
-                                countOrientationLandscape++;
-                                orientationPortrait = false;
-                            } else {
-                                countOrientationPortrait++;
-                            }
-                            if (this.resize) {
-                                content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: contentToOrder[j].width, height: contentToOrder[j].height});
-
-                            } else {
-                                if (orientationPortrait) {
-                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: this.witdhPage, height: this.heightPage});
-                                } else {
-                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[j].value, width: this.heightPage, height: this.witdhPage});
-                                }
-                            }
-                            if (content.length == contentToOrder.length) {
-                                let pageOrientation: any = 'portrait';
-                                if (countOrientationLandscape > countOrientationPortrait) {
-                                    pageOrientation = 'landscape';
-                                }
-                                var docDefinition = {
-                                    pageMargins: [ 5, 5, 5, 5 ],
-                                    pageOrientation: pageOrientation,
-                                    content: content,
-                                    info: {
-                                        title: title,
-                                        author: 'Gallyoko'
-                                    },
-                                };
-                                this.pdfObj = pdfMake.createPdf(docDefinition);
-                                resolve(this.pdfObj);
-                            }
+                        let pageOrientation: any = 'portrait';
+                        if (countOrientationLandscape > countOrientationPortrait) {
+                            pageOrientation = 'landscape';
                         }
+                        var docDefinition = {
+                            pageMargins: [ 5, 5, 5, 5 ],
+                            pageOrientation: pageOrientation,
+                            content: content,
+                            info: {
+                                title: title,
+                                author: 'Gallyoko'
+                            },
+                        };
+                        this.pdfObj = pdfMake.createPdf(docDefinition);
+                        resolve(this.pdfObj);
                     }
                 });
             }
@@ -317,7 +306,6 @@ export class JapscanService {
                     return a.order - b.order;
                 });
                 const content: any = [];
-                const contentToOrder: any = [];
                 let allUrl: any = [];
                 let count: number = 0;
                 for(let k = 0; k < images.length; k++) {
@@ -326,52 +314,43 @@ export class JapscanService {
                         allUrl.push(images[k].urlMask + images[k].pages[i]);
                     }
                 }
+                let countOrientationPortrait: number = 0;
+                let countOrientationLandscape: number = 0;
                 for(let j = 0; j < allUrl.length; j++) {
                     this.getBase64ImageFromURL(allUrl[j]).subscribe(base64data => {
                         this.currentPagePdf ++;
-                        contentToOrder.push({'order': j, 'value': base64data.image64, 'width': base64data.width, 'height': base64data.height});
-                        if (contentToOrder.length == allUrl.length) {
-                            contentToOrder.sort(function (a, b) {
+                        let orientationPortrait: any = true;
+                        if (base64data.width > base64data.height) {
+                            orientationPortrait = false;
+                            countOrientationLandscape++;
+                        } else {
+                            countOrientationPortrait++;
+                        }
+                        if (orientationPortrait) {
+                            content.push({'order': j, image: 'data:image/jpg;base64,'+base64data.image64, width: this.witdhPage, height: this.heightPage});
+                        } else {
+                            content.push({'order': j, image: 'data:image/jpg;base64,'+base64data.image64, width: this.heightPage, height: this.witdhPage});
+                        }
+                        if (content.length == allUrl.length) {
+                            content.sort(function (a, b) {
                                 return a.order - b.order;
                             });
-                            let countOrientationPortrait: number = 0;
-                            let countOrientationLandscape: number = 0;
-                            for(let l = 0; l < contentToOrder.length; l++) {
-                                let orientationPortrait: any = true;
-                                if (contentToOrder[l].width > contentToOrder[l].height) {
-                                    orientationPortrait = false;
-                                    countOrientationLandscape++;
-                                } else {
-                                    countOrientationPortrait++;
-                                }
-                                if (this.resize) {
-                                    content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: contentToOrder[l].width, height: contentToOrder[l].height});
-                                } else {
-                                    if (orientationPortrait) {
-                                        content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: this.witdhPage, height: this.heightPage});
-                                    } else {
-                                        content.push({image: 'data:image/jpg;base64,'+contentToOrder[l].value, width: this.heightPage, height: this.witdhPage});
-                                    }
-                                }
-                                if (content.length == contentToOrder.length) {
-                                    let pageOrientation: any = 'portrait';
-                                    if (countOrientationLandscape > countOrientationPortrait) {
-                                        pageOrientation = 'landscape';
-                                    }
-                                    var docDefinition = {
-                                        pageSize: 'A4',
-                                        pageOrientation: pageOrientation,
-                                        pageMargins: [ 5, 5, 5, 5 ],
-                                        content: content,
-                                        info: {
-                                            title: title,
-                                            author: 'Gallyoko'
-                                        },
-                                    };
-                                    this.pdfObj = pdfMake.createPdf(docDefinition);
-                                    resolve(this.pdfObj);
-                                }
+                            let pageOrientation: any = 'portrait';
+                            if (countOrientationLandscape > countOrientationPortrait) {
+                                pageOrientation = 'landscape';
                             }
+                            var docDefinition = {
+                                pageSize: 'A4',
+                                pageOrientation: pageOrientation,
+                                pageMargins: [ 5, 5, 5, 5 ],
+                                content: content,
+                                info: {
+                                    title: title,
+                                    author: 'Gallyoko'
+                                },
+                            };
+                            this.pdfObj = pdfMake.createPdf(docDefinition);
+                            resolve(this.pdfObj);
                         }
                     });
                 }
