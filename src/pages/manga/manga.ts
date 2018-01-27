@@ -20,29 +20,37 @@ export class MangaPage {
             if (mangas) {
                 this.mangaList = mangas;
             } else {
-                this.commonService.toastShow('Impossible d\'afficher le liste.');
+                this.commonService.toastShow('Impossible de charger la liste des mangas.');
             }
         });
     }
 
     getMangasBeginBy(word) {
-        const filterTitle = (request) => {
-            return this.mangaList.filter((manga) =>
-                manga.title.toLowerCase().indexOf(request.toLowerCase()) == 0
-            );
-        };
-        this.mangas = filterTitle(word);
+        if (this.mangaList.length > 0) {
+            const filterTitle = (request) => {
+                return this.mangaList.filter((manga) =>
+                    manga.title.toLowerCase().indexOf(request.toLowerCase()) == 0
+                );
+            };
+            this.mangas = filterTitle(word);
+        } else {
+            this.commonService.toastShow('Impossible de charger la liste des mangas.');
+        }
     }
 
     getMangasContent(event) {
         let value = event.target.value;
         if (value && value.trim() != '' && value.length > 2) {
-            const filterTitle = (request) => {
-                return this.mangaList.filter((manga) =>
-                    manga.title.toLowerCase().indexOf(request.toLowerCase()) > -1
-                );
-            };
-            this.mangas = filterTitle(value);
+            if (this.mangaList.length > 0) {
+                const filterTitle = (request) => {
+                    return this.mangaList.filter((manga) =>
+                        manga.title.toLowerCase().indexOf(request.toLowerCase()) > -1
+                    );
+                };
+                this.mangas = filterTitle(value);
+            } else {
+                this.commonService.toastShow('Impossible de charger la liste des mangas.');
+            }
         } else {
             this.mangas = [];
         }

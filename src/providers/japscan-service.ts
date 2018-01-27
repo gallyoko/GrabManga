@@ -25,12 +25,12 @@ export class JapscanService {
     private currentPagePdf: any;
 
     constructor(public http: Http) {
-        this.urlApi = '/api';
-        //this.urlApi = 'http://japscan.com';
-        this.urlDepot = '/book';
-        //this.urlDepot = 'http://ww1.japscan.com/lel';
-        this.urlImage = '/images';
-        //this.urlImage = 'https://www.google.fr';
+        //this.urlApi = '/api';
+        this.urlApi = 'http://m.japscan.com';
+        //this.urlDepot = '/book';
+        this.urlDepot = 'http://ww1.japscan.com/lel';
+        //this.urlImage = '/images';
+        this.urlImage = 'https://www.google.fr';
         this.witdhResolutionImage = 560;
         this.heightResolutionImage = 840;
         this.resize = false;
@@ -257,22 +257,26 @@ export class JapscanService {
             const content: any = [];
             let countOrientationPortrait: number = 0;
             let countOrientationLandscape: number = 0;
+            let currentPage: any = 0;
             for(let i = 0; i < images.pages.length; i++) {
                 this.getBase64ImageFromURL(images.urlMask + images.pages[i]).subscribe(base64data => {
-                    let orientationPortrait: any = true;
-                    if (base64data.width > base64data.height) {
-                        countOrientationLandscape++;
-                        orientationPortrait = false;
-                    } else {
-                        countOrientationPortrait++;
-                    }
-                    if (orientationPortrait) {
-                        content.push({'order': i, image: 'data:image/jpg;base64,'+base64data.image64, width: this.witdhPage, height: this.heightPage});
-                    } else {
-                        content.push({'order': i, image: 'data:image/jpg;base64,'+base64data.image64, width: this.heightPage, height: this.witdhPage});
-                    }
                     this.currentPagePdf ++;
-                    if (content.length == images.pages.length) {
+                    currentPage ++;
+                    if (base64data !== false) {
+                        let orientationPortrait: any = true;
+                        if (base64data.width > base64data.height) {
+                            countOrientationLandscape++;
+                            orientationPortrait = false;
+                        } else {
+                            countOrientationPortrait++;
+                        }
+                        if (orientationPortrait) {
+                            content.push({'order': i, image: 'data:image/jpg;base64,'+base64data.image64, width: this.witdhPage, height: this.heightPage});
+                        } else {
+                            content.push({'order': i, image: 'data:image/jpg;base64,'+base64data.image64, width: this.heightPage, height: this.witdhPage});
+                        }
+                    }
+                    if (currentPage == images.pages.length) {
                         content.sort(function (a, b) {
                             return a.order - b.order;
                         });
@@ -318,22 +322,26 @@ export class JapscanService {
                 }
                 let countOrientationPortrait: number = 0;
                 let countOrientationLandscape: number = 0;
+                let currentPage: any = 0;
                 for(let j = 0; j < allUrl.length; j++) {
                     this.getBase64ImageFromURL(allUrl[j]).subscribe(base64data => {
                         this.currentPagePdf ++;
-                        let orientationPortrait: any = true;
-                        if (base64data.width > base64data.height) {
-                            orientationPortrait = false;
-                            countOrientationLandscape++;
-                        } else {
-                            countOrientationPortrait++;
+                        currentPage ++;
+                        if (base64data !== false) {
+                            let orientationPortrait: any = true;
+                            if (base64data.width > base64data.height) {
+                                orientationPortrait = false;
+                                countOrientationLandscape++;
+                            } else {
+                                countOrientationPortrait++;
+                            }
+                            if (orientationPortrait) {
+                                content.push({'order': j, image: 'data:image/jpg;base64,'+base64data.image64, width: this.witdhPage, height: this.heightPage});
+                            } else {
+                                content.push({'order': j, image: 'data:image/jpg;base64,'+base64data.image64, width: this.heightPage, height: this.witdhPage});
+                            }
                         }
-                        if (orientationPortrait) {
-                            content.push({'order': j, image: 'data:image/jpg;base64,'+base64data.image64, width: this.witdhPage, height: this.heightPage});
-                        } else {
-                            content.push({'order': j, image: 'data:image/jpg;base64,'+base64data.image64, width: this.heightPage, height: this.witdhPage});
-                        }
-                        if (content.length == allUrl.length) {
+                        if (currentPage == allUrl.length) {
                             content.sort(function (a, b) {
                                 return a.order - b.order;
                             });
@@ -372,7 +380,8 @@ export class JapscanService {
                     observer.complete();
                 };
                 img.onerror = (err) => {
-                    observer.error(err);
+                    observer.next(false);
+                    observer.complete();
                 };
             } else {
                 observer.next(this.getBase64Image(img));

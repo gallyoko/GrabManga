@@ -73,9 +73,9 @@
             <span *ngIf="!isDownload && downloadError">Erreur de téléchargement</span>
           </ion-col>
           <ion-col col-2>
-            <ion-icon *ngIf="!isDownload" name="ios-checkmark-circle-outline" class="icon-title"></ion-icon>
-            <i *ngIf="isDownload" class="fa-li fa fa-spinner fa-spin"></i>
-            <ion-icon *ngIf="!isDownload && downloadError" name="ios-thumbs-down-outline" class="icon-title"></ion-icon>
+            <i *ngIf="!isDownload" class="fa fa-check-circle-o fa-2x fa-lg"></i>
+            <i *ngIf="isDownload" class="fa fa-spinner fa-spin fa-2x fa-lg"></i>
+            <ion-icon *ngIf="!isDownload && downloadError" name="ios-thumbs-down-outline"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -83,13 +83,13 @@
     <ion-item >
       <ion-grid>
         <ion-row>
-          <ion-col col-10>
+          <ion-col col-11>
             <span *ngIf="isStep0">Récupération des urls en cours...</span>
             <span *ngIf="!isStep0">Récupération des urls terminée</span>
           </ion-col>
-          <ion-col col-2>
-            <ion-icon *ngIf="!isStep0" name="checkmark" class="icon-title"></ion-icon>
-            <i *ngIf="isStep0" class="fa-li fa fa-spinner fa-spin"></i>
+          <ion-col col-1>
+            <i *ngIf="!isStep0" class="fa fa-check fa-lg"></i>
+            <i *ngIf="isStep0" class="fa fa-spinner fa-spin fa-lg"></i>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -97,14 +97,14 @@
     <ion-item >
       <ion-grid>
         <ion-row>
-          <ion-col col-10>
+          <ion-col col-11>
             <span *ngIf="isStep0 && !isStep1">Génération du PDF en attente...</span>
             <span *ngIf="!isStep0 && isStep1">Génération du PDF en cours...</span>
             <span *ngIf="!isStep1 && !isStep0">Génération du PDF terminé</span>
           </ion-col>
-          <ion-col col-2>
-            <ion-icon *ngIf="!isStep1" name="checkmark" class="icon-title"></ion-icon>
-            <i *ngIf="isStep1" class="fa-li fa fa-spinner fa-spin"></i>
+          <ion-col col-1>
+            <i *ngIf="!isStep1 && !isStep0" class="fa fa-check fa-lg"></i>
+            <i *ngIf="isStep1" class="fa fa-spinner fa-spin fa-lg"></i>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -117,20 +117,17 @@
     <ion-item >
       <ion-grid>
         <ion-row>
-          <ion-col col-10>
+          <ion-col col-11>
             <span *ngIf="isStep2 && !isStep2Finish">Ecriture du PDF en cours...</span>
             <span *ngIf="!isStep2 && !isStep2Finish">Ecriture du PDF en attente...</span>
             <span *ngIf="isStep2Finish">Ecriture du PDF terminé</span>
           </ion-col>
-          <ion-col col-2>
-            <ion-icon *ngIf="isStep2Finish" name="checkmark" class="icon-title"></ion-icon>
-            <i *ngIf="isStep2 && !isStep2Finish" class="fa-li fa fa-spinner fa-spin"></i>
+          <ion-col col-1>
+            <i *ngIf="isStep2Finish" class="fa fa-check fa-lg"></i>
+            <i *ngIf="isStep2 && !isStep2Finish" class="fa fa-spinner fa-spin fa-lg"></i>
           </ion-col>
         </ion-row>
       </ion-grid>
-    </ion-item>
-    <ion-item *ngIf="!isDownload" text-wrap="none">
-      Le fichier généré {{pdfFilename}} est disponible dans {{pdfPath}}
     </ion-item>
   </ion-list>
 </ion-content>
