@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, ModalController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { JapscanService } from '../../providers/japscan-service';
 import { MangaDownloadPage } from './manga.download';
@@ -14,9 +14,8 @@ export class MangaInfoPage {
     private titleIsFavorite:any = false;
     private waitCover: any = true;
 
-    constructor(private navCtrl: NavController, private modalCtrl: ModalController,
-                private params: NavParams, private commonService: CommonService,
-                private japscanService: JapscanService) {
+    constructor(private navCtrl: NavController, private params: NavParams,
+                private commonService: CommonService, private japscanService: JapscanService) {
         this.manga = this.params.get('manga');
         this.checkFavorite();
         this.showMangaInfo();
@@ -56,8 +55,7 @@ export class MangaInfoPage {
     }
 
     openModal() {
-        let modal = this.modalCtrl.create(MangaDownloadPage, {'manga': this.manga});
-        modal.present();
+        this.navCtrl.push(MangaDownloadPage, { manga: this.manga });
     }
 
     closeInfo() {

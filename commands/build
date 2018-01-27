@@ -5,7 +5,17 @@ if [ -z "$path_commands" ] ; then
     echo "Error"
     exit 1  # fail
 else
-    rm -f ${path_commands}/../log/build.log
+    date=`date '+%Y-%m-%d_%H%M%S'`
+
+    if [ -f ${path_commands}/../delivery/GrabManga.apk ]
+    then
+        mv -f ${path_commands}/../delivery/GrabManga.apk ${path_commands}/../delivery/GrabManga_${date}.apk
+    fi
+
+    if [ -f ${path_commands}/../log/build.log ]
+    then
+        mv -f ${path_commands}/../log/build.log ${path_commands}/../log/build_${date}.log
+    fi
 
     cd ${path_commands}/../
 
@@ -30,13 +40,9 @@ else
 
     jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${path_commands}/../delivery/keystore/grabmanga.keystore android-release-unsigned.apk alias_name >> ${path_commands}/../log/build.log
 
-    if [ -f ${path_commands}/../delivery/GrabManga.apk ]
-    then
-        date=`date '+%Y-%m-%d_%H%M%S'`
-        mv -f ${path_commands}/../delivery/GrabManga.apk ${path_commands}/../delivery/GrabManga_${date}.apk
-    fi
+    zipalign -v 4 ${path_commands}/../platforms/android/build/outputs/apk/release/android-release-unsigned.apk ${path_commands}/../delivery/GrabManga.apk >> ${path_commands}/../log/build.log
 
-    mv -f ${path_commands}/../platforms/android/build/outputs/apk/release/android-release-unsigned.apk ${path_commands}/../delivery/GrabManga.apk
+    rm -f ${path_commands}/../platforms/android/build/outputs/apk/release/android-release-unsigned.apk
 fi
 
 cd $current_path

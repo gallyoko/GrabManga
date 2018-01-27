@@ -3,10 +3,10 @@
     <ion-title>
       {{manga.title}} / Téléchargement
     </ion-title>
-    <ion-buttons start>
+    <ion-buttons left>
       <button ion-button *ngIf="!isDownload" (click)="dismiss()">
-        <span ion-text color="danger" showWhen="ios">Cancel</span>
-        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+        <span ion-text color="primary" showWhen="ios">Cancel</span>
+        <ion-icon name="ios-arrow-back-outline" showWhen="android,windows"></ion-icon>
       </button>
       <button ion-button *ngIf="isDownload">
         <span ion-text color="danger" showWhen="ios">Wait</span>
@@ -28,7 +28,7 @@
         <ion-option *ngFor="let tome of manga.tomes; let i = index" value="{{i}}">{{tome.title}}</ion-option>
       </ion-select>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="showDlTomeButton">
       <ion-grid>
         <ion-row>
           <ion-col col-9>Télécharger le tome</ion-col>
@@ -101,8 +101,8 @@
         <ion-row>
           <ion-col col-10>
             <span *ngIf="isStep0 && !isStep1">Génération du PDF en attente...</span>
-            <span *ngIf="isStep1">Génération du PDF en cours...</span>
-            <span *ngIf="!isStep1">Génération du PDF terminé</span>
+            <span *ngIf="!isStep0 && isStep1">Génération du PDF en cours...</span>
+            <span *ngIf="!isStep1 && !isStep0">Génération du PDF terminé</span>
           </ion-col>
           <ion-col col-2>
             <ion-icon *ngIf="!isStep1" name="checkmark" class="icon-title"></ion-icon>
