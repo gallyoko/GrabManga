@@ -1,31 +1,27 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
-import { JapscanService } from '../../providers/japscan-service';
 import { MangaInfoPage } from './manga.info';
 
 @Component({
     selector: 'page-manga',
     templateUrl: 'manga.html',
-    providers: [CommonService, JapscanService]
+    providers: [CommonService]
 })
 export class MangaPage {
     private paginatorAlpha:any = [];
     private mangaList:any = [];
     private mangas:any = [];
 
-    constructor(private navCtrl: NavController,
-                private commonService: CommonService, private japscanService: JapscanService,) {
+    constructor(private navCtrl: NavController, private commonService: CommonService) {
         this.paginatorAlpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'
             , 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-        this.commonService.loadingShow('Please wait...');
-        this.japscanService.getMangas().then(mangas => {
-            if (!mangas) {
-                this.commonService.toastShow('Erreur lors de la récupération des titres manga.');
-            } else {
+        this.commonService.getMangas().then(mangas => {
+            if (mangas) {
                 this.mangaList = mangas;
+            } else {
+                this.commonService.toastShow('Impossible d\'afficher le liste.');
             }
-            this.commonService.loadingHide();
         });
     }
 

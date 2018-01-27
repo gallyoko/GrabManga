@@ -24,7 +24,7 @@ export class MangaDownloadPage {
     private downloadError: any = false;
     private pdfFilename: any = '';
     private pdfPath: any = '';
-    private compressionMode: any = false;
+    private compressionMode: any = true;
     private countImages: any;
     private currentImage: any;
     private progress: any;
@@ -38,7 +38,6 @@ export class MangaDownloadPage {
         this.showDlTomeButton = true;
         if (this.platform.is('cordova')) {
             this.showDlTomeButton = false;
-            this.compressionMode = true;
         }
         this.loadChaptersInit();
         this.timer = this.japscanService.getCurrentPagePdf()

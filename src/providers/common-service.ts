@@ -76,6 +76,70 @@ export class CommonService {
       });
   }
 
+    setTimestamp(timestamp) {
+        if (this.platform.is('cordova')) {
+            return this.nativeStorage.setItem('timestamp', timestamp)
+                .then(
+                    () => {
+                        return Promise.resolve(true);
+                    },
+                    error => {
+                        return Promise.resolve(false);
+                    }
+                );
+        } else {
+            return Promise.resolve(this.storage.set('timestamp', timestamp));
+        }
+    }
+
+    getTimestamp() {
+        if (this.platform.is('cordova')) {
+            return this.nativeStorage.getItem('timestamp')
+                .then(
+                    data => {
+                        return Promise.resolve(data);
+                    },
+                    error => {
+                        return Promise.resolve(false);
+                    }
+                );
+        } else {
+            return Promise.resolve(this.storage.get('timestamp'));
+        }
+    }
+
+    setMangas(mangas) {
+        if (this.platform.is('cordova')) {
+            return this.nativeStorage.setItem('mangas', mangas)
+                .then(
+                    () => {
+                        return Promise.resolve(true);
+                    },
+                    error => {
+                        return Promise.resolve(false);
+                    }
+                );
+        } else {
+            return Promise.resolve(this.storage.set('mangas', mangas));
+        }
+    }
+
+    getMangas() {
+        if (this.platform.is('cordova')) {
+            return this.nativeStorage.getItem('mangas')
+                .then(
+                    data => {
+                        return Promise.resolve(data);
+                    },
+                    error => {
+                        return Promise.resolve(false);
+                    }
+                );
+        } else {
+            return Promise.resolve(this.storage.get('mangas'));
+        }
+    }
+
   setDownload(download) {
       if (this.platform.is('cordova')) {
           return this.nativeStorage.setItem('download', download)

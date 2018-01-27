@@ -26,7 +26,7 @@ export class JapscanService {
 
     constructor(public http: Http) {
         this.urlApi = '/api';
-        //this.urlApi = 'http://m.japscan.com';
+        //this.urlApi = 'http://japscan.com';
         this.urlDepot = '/book';
         //this.urlDepot = 'http://ww1.japscan.com/lel';
         this.urlImage = '/images';
@@ -213,9 +213,10 @@ export class JapscanService {
                                         dataUrlNom = dataUrlNomToClean.trim().replace('data-nom="', '');
                                         let dataUrlTome: any = '';
                                         let dataUrlTomeToCleanTmp: any = checkBaseUrl[1].trim().split('data-nom="');
-                                        dataUrlTome = dataUrlTomeToCleanTmp[1].trim().replace('" ></select>', '')
-                                            .replace('" class="flex-item big"></select>', '');
-
+                                        if (dataUrlTomeToCleanTmp.length > 1) {
+                                            dataUrlTome = dataUrlTomeToCleanTmp[1].trim().replace('" ></select>', '')
+                                                .replace('" class="flex-item big"></select>', '');
+                                        }
                                         if (dataUrlTome.trim() == '') {
                                             if (dataUrlTomeToClean.indexOf('" data-nom="') > -1) {
                                                 let dataUrlTomeToCleanTmp: any = dataUrlTomeToClean.trim().split('" data-nom="');
