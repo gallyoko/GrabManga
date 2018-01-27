@@ -38,6 +38,7 @@ export class MangaDownloadPage {
         this.showDlTomeButton = true;
         if (this.platform.is('cordova')) {
             this.showDlTomeButton = false;
+            this.compressionMode = true;
         }
         this.loadChaptersInit();
         this.timer = this.japscanService.getCurrentPagePdf()
