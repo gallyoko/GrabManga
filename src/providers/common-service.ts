@@ -59,12 +59,14 @@ export class CommonService {
           let path: any = 'votre dossier de téléchargement';
           if (this.platform.is('cordova')) {
               pdfObj.getBuffer((buffer) => {
-                  var blob = new Blob([buffer], { type: 'application/pdf' });
+                  let blob = new Blob([buffer], { type: 'application/pdf' });
                   let filenameTmp1: any = name.replace(/ /g, '_');
                   let filenameTmp2: any = filenameTmp1.replace(/'/g, '_');
                   let filename: any = filenameTmp2.replace(/:/g, '_');
                   path = this.file.externalRootDirectory+'Download/';
                   this.file.writeFile(this.file.externalRootDirectory+'Download/', filename+'.pdf', blob, { replace: true }).then(() => {
+                      pdfObj = null;
+                      blob = null;
                       this.fileOpener.open(this.file.externalRootDirectory+'Download/' + filename+'.pdf', 'application/pdf');
                       resolve({'path': path.replace('file:/', ''), 'name': filename});
                   })

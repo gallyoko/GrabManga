@@ -12,6 +12,7 @@ export class MangaPage {
     private paginatorAlpha:any = [];
     private mangaList:any = [];
     private mangas:any = [];
+    private searchCharacter: any = '';
 
     constructor(private navCtrl: NavController, private commonService: CommonService) {
         this.paginatorAlpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'
@@ -28,12 +29,14 @@ export class MangaPage {
 
     getMangasBeginBy(word) {
         if (this.mangaList.length > 0) {
+            this.mangas = [];
             const filterTitle = (request) => {
                 return this.mangaList.filter((manga) =>
                     manga.title.toLowerCase().indexOf(request.toLowerCase()) == 0
                 );
             };
             this.mangas = filterTitle(word);
+            this.searchCharacter = word;
         } else {
             this.commonService.toastShow('Impossible de charger la liste des mangas.');
         }
@@ -41,6 +44,7 @@ export class MangaPage {
 
     getMangasContent(event) {
         let value = event.target.value;
+        this.mangas = [];
         if (value && value.trim() != '' && value.length > 2) {
             if (this.mangaList.length > 0) {
                 const filterTitle = (request) => {
@@ -52,8 +56,6 @@ export class MangaPage {
             } else {
                 this.commonService.toastShow('Impossible de charger la liste des mangas.');
             }
-        } else {
-            this.mangas = [];
         }
     }
 

@@ -23,6 +23,7 @@ export class JapscanService {
     private witdhPage: any;
     private heightPage: any;
     private currentPagePdf: any;
+    private timer: any;
 
     constructor(public http: Http) {
         this.urlApi = '/api';
@@ -31,6 +32,8 @@ export class JapscanService {
         //this.urlDepot = 'http://ww1.japscan.com/lel';
         this.urlImage = '/images';
         //this.urlImage = 'https://www.google.fr';
+        this.timer = 500;
+        //this.timer = 1000;
         this.witdhResolutionImage = 560;
         this.heightResolutionImage = 840;
         this.resize = false;
@@ -42,7 +45,7 @@ export class JapscanService {
 
     getCurrentPagePdf = () => {
         return IntervalObservable
-            .create(500)
+            .create(this.timer)
             .map((i) => this.currentPagePdf)
     }
 
@@ -169,6 +172,7 @@ export class JapscanService {
             for(let i = 0; i < tome.chapters.length; i++) {
                 this.getMangaChapterImages(tome.chapters[i]).subscribe(imagesChapter => {
                     this.images.push(imagesChapter);
+                    imagesChapter = null;
                     if (this.images.length == tome.chapters.length) {
                         this.images.sort(function (a, b) {
                             return a.order - b.order;
@@ -192,6 +196,8 @@ export class JapscanService {
                         if (elements.length > 1) {
                             let pageListToClean: any = elements[1].trim().split('</select>');
                             let pageList: any = pageListToClean[0].trim().split('data-img="');
+                            body = [];
+                            pageListToClean = [];
                             let bookPages: any = [];
                             for(let i = 0; i < pageList.length; i++) {
                                 let pageInfo: any = pageList[i].trim().split('" value="');
@@ -201,18 +207,23 @@ export class JapscanService {
                                         bookPages.push(page);
                                     }
                                 }
+                                pageInfo = [];
                                 if (i >= (pageList.length -1)) {
+                                    pageList = [];
                                     if (bookPages.length > 0) {
                                         let dataUrlTomeToClean: any = '';
                                         let dataUrlNom: any = '';
                                         let checkBaseUrl: any = elements[0].trim().split('<select name="chapitres" id="chapitres" ');
                                         let baseUrlToCleanTmp: any = elements[0].trim().split('<select name="mangas" id="mangas" ');
+                                        elements = [];
                                         let baseUrlToClean: any = baseUrlToCleanTmp[1].trim().split('" data-uri="');
+                                        baseUrlToCleanTmp = [];
                                         let dataUrlNomToClean: any = baseUrlToClean[0];
                                         dataUrlTomeToClean = baseUrlToClean[2];
                                         dataUrlNom = dataUrlNomToClean.trim().replace('data-nom="', '');
                                         let dataUrlTome: any = '';
                                         let dataUrlTomeToCleanTmp: any = checkBaseUrl[1].trim().split('data-nom="');
+                                        checkBaseUrl = [];
                                         if (dataUrlTomeToCleanTmp.length > 1) {
                                             dataUrlTome = dataUrlTomeToCleanTmp[1].trim().replace('" ></select>', '')
                                                 .replace('" class="flex-item big"></select>', '');
@@ -229,15 +240,19 @@ export class JapscanService {
                                         images.urlMask = urlMask;
                                         images.pages = bookPages;
                                         images.order = chapter.order;
+                                        bookPages = [];
                                         observer.next(images);
                                         observer.complete();
                                     } else {
+                                        bookPages = [];
                                         observer.next(false);
                                         observer.complete();
                                     }
                                 }
                             }
                         } else {
+                            body = [];
+                            elements = [];
                             observer.next(false);
                             observer.complete();
                         }
@@ -254,7 +269,7 @@ export class JapscanService {
         return new Promise(resolve => {
             this.currentPagePdf = 0;
             this.resize = compression;
-            const content: any = [];
+            let content: any = [];
             let countOrientationPortrait: number = 0;
             let countOrientationLandscape: number = 0;
             let currentPage: any = 0;
@@ -276,6 +291,7 @@ export class JapscanService {
                             content.push({'order': i, image: 'data:image/jpg;base64,'+base64data.image64, width: this.heightPage, height: this.witdhPage});
                         }
                     }
+                    base64data = null;
                     if (currentPage == images.pages.length) {
                         content.sort(function (a, b) {
                             return a.order - b.order;
@@ -285,7 +301,7 @@ export class JapscanService {
                             pageOrientation = 'landscape';
                         }
                         this.currentPagePdf = images.pages.length;
-                        var docDefinition = {
+                        let docDefinition: any = {
                             pageMargins: [ 5, 5, 5, 5 ],
                             pageOrientation: pageOrientation,
                             content: content,
@@ -294,7 +310,9 @@ export class JapscanService {
                                 author: 'Gallyoko'
                             },
                         };
+                        content = [];
                         this.pdfObj = pdfMake.createPdf(docDefinition);
+                        docDefinition = null;
                         resolve(this.pdfObj);
                     }
                 });
@@ -311,7 +329,7 @@ export class JapscanService {
                 images.sort(function (a, b) {
                     return a.order - b.order;
                 });
-                const content: any = [];
+                let content: any = [];
                 let allUrl: any = [];
                 let count: number = 0;
                 for(let k = 0; k < images.length; k++) {
@@ -320,6 +338,7 @@ export class JapscanService {
                         allUrl.push(images[k].urlMask + images[k].pages[i]);
                     }
                 }
+                imagesTome = [];
                 let countOrientationPortrait: number = 0;
                 let countOrientationLandscape: number = 0;
                 let currentPage: any = 0;
@@ -341,6 +360,7 @@ export class JapscanService {
                                 content.push({'order': j, image: 'data:image/jpg;base64,'+base64data.image64, width: this.heightPage, height: this.witdhPage});
                             }
                         }
+                        base64data = null;
                         if (currentPage == allUrl.length) {
                             content.sort(function (a, b) {
                                 return a.order - b.order;
@@ -350,7 +370,7 @@ export class JapscanService {
                                 pageOrientation = 'landscape';
                             }
                             this.currentPagePdf = allUrl.length;
-                            var docDefinition = {
+                            let docDefinition: any = {
                                 pageSize: 'A4',
                                 pageOrientation: pageOrientation,
                                 pageMargins: [ 5, 5, 5, 5 ],
@@ -360,7 +380,9 @@ export class JapscanService {
                                     author: 'Gallyoko'
                                 },
                             };
+                            content = [];
                             this.pdfObj = pdfMake.createPdf(docDefinition);
+                            docDefinition = null;
                             resolve(this.pdfObj);
                         }
                     });
@@ -377,21 +399,24 @@ export class JapscanService {
             if (!img.complete) {
                 img.onload = () => {
                     observer.next(this.getBase64Image(img));
+                    img = null;
                     observer.complete();
                 };
                 img.onerror = (err) => {
+                    img = null;
                     observer.next(false);
                     observer.complete();
                 };
             } else {
                 observer.next(this.getBase64Image(img));
+                img = null;
                 observer.complete();
             }
         });
     }
 
     getBase64Image(img: HTMLImageElement) {
-        var canvas = document.createElement("canvas");
+        let canvas = document.createElement("canvas");
         let width: any = 0;
         let ratio: any = 0;
         let height: any = 0;
@@ -408,17 +433,20 @@ export class JapscanService {
             width = img.width;
             height = img.height;
         }
-        var ctx = canvas.getContext("2d");
+        let ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, width, height);
         canvas.width = width;
         canvas.height = height;
         ctx.drawImage(img, 0, 0, width, height);
-        var dataURL = canvas.toDataURL("image/png");
+        let dataURL = canvas.toDataURL("image/png");
         const returnValue = {
             'image64' : dataURL.replace(/^data:image\/(png|jpg);base64,/, ""),
             'width': width,
             'height': height
         };
+        dataURL = null;
+        ctx = null;
+        canvas = null;
         return returnValue;
     }
 
@@ -430,12 +458,14 @@ export class JapscanService {
                         let imgLinks: any = [];
                         let body: any = response['_body'];
                         let elements: any = body.split('src="https://encrypted-tbn0.gstatic.com/images?q=tbn:');
+                        body = null;
                         elements.splice((elements.length -1), 1);
                         elements.splice(0, 1);
                         for(let i = 0; i < elements.length; i++) {
                             let linkTemp: any = elements[i].split('" data-sz=');
                             imgLinks.push('https://encrypted-tbn0.gstatic.com/images?q=tbn:'+linkTemp[0].trim());
                         }
+                        elements = [];
                         resolve(imgLinks);
                     },
                     err => {
