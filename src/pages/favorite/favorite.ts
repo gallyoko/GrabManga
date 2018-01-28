@@ -25,6 +25,10 @@ export class FavoritePage {
         this.showFavorites();
     }
 
+    ionViewDidLeave () {
+        this.favorites = [];
+    }
+
     showFavorites() {
         this.favorites = [];
         this.commonService.getFavorites().then(favorites => {

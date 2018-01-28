@@ -25,12 +25,12 @@ export class JapscanService {
     private currentPagePdf: any;
 
     constructor(public http: Http) {
-        //this.urlApi = '/api';
-        this.urlApi = 'http://m.japscan.com';
-        //this.urlDepot = '/book';
-        this.urlDepot = 'http://ww1.japscan.com/lel';
-        //this.urlImage = '/images';
-        this.urlImage = 'https://www.google.fr';
+        this.urlApi = '/api';
+        //this.urlApi = 'http://m.japscan.com';
+        this.urlDepot = '/book';
+        //this.urlDepot = 'http://ww1.japscan.com/lel';
+        this.urlImage = '/images';
+        //this.urlImage = 'https://www.google.fr';
         this.witdhResolutionImage = 560;
         this.heightResolutionImage = 840;
         this.resize = false;

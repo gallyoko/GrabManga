@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavParams, ViewController, Platform } from 'ionic-angular';
+import { NavParams, NavController, Platform } from 'ionic-angular';
 import { CommonService } from '../../providers/common-service';
 import { JapscanService } from '../../providers/japscan-service';
 
@@ -31,8 +31,8 @@ export class MangaDownloadPage {
     private timer: any;
     private showDlTomeButton;
 
-    constructor(public params: NavParams,
-                public viewCtrl: ViewController, private commonService: CommonService,
+    constructor(private params: NavParams,
+                private navCtrl: NavController, private commonService: CommonService,
                 private japscanService: JapscanService, private platform: Platform) {
         this.manga = this.params.get('manga');
         this.showDlTomeButton = true;
@@ -40,6 +40,21 @@ export class MangaDownloadPage {
             this.showDlTomeButton = false;
         }
         this.loadChaptersInit();
+    }
+
+    ionViewDidEnter () {
+        this.progress = 0;
+        this.currentImage = 0;
+        this.countImages = 0;
+    }
+
+    ionViewDidLeave () {
+        this.stopTimer();
+        this.manga = {};
+        this.chapters = [];
+    }
+
+    startTimer() {
         this.timer = this.japscanService.getCurrentPagePdf()
             .subscribe((res) => {
                 if (this.isDownload) {
@@ -52,14 +67,11 @@ export class MangaDownloadPage {
             });
     }
 
-    ionViewDidEnter () {
-        this.progress = 0;
-        this.currentImage = 0;
-        this.countImages = 0;
-    }
-
-    ionViewDidLeave () {
-        this.timer.unsubscribe();
+    stopTimer() {
+        if (this.timer) {
+            this.timer.unsubscribe();
+            this.timer = null;
+        }
     }
 
     loadChaptersInit() {
@@ -96,6 +108,7 @@ export class MangaDownloadPage {
             if (this.manga.tomes[this.tomeIndex].chapters.length < 12) {
                 this.isStep2Finish = false;
                 this.isDownload = true;
+                this.startTimer();
                 this.showResultDownload = true;
                 this.isStep0 = true;
                 this.isStep1 = false;
@@ -129,6 +142,8 @@ export class MangaDownloadPage {
                                     this.isStep2Finish = true;
                                     this.isStep2 = false;
                                     this.isDownload = false;
+                                    pdf = null;
+                                    this.stopTimer();
                                 });
                             });
                         });
@@ -136,6 +151,7 @@ export class MangaDownloadPage {
                         this.isStep1 = false;
                         this.isDownload = false;
                         this.downloadError = true;
+                        this.stopTimer();
                     }
                 });
             } else {
@@ -152,6 +168,7 @@ export class MangaDownloadPage {
         if (this.chapterIndex) {
             this.isStep2Finish = false;
             this.isDownload = true;
+            this.startTimer();
             this.showResultDownload = true;
             this.isStep0 = true;
             this.isStep1 = false;
@@ -176,6 +193,8 @@ export class MangaDownloadPage {
                         this.isStep2Finish = true;
                         this.isStep2 = false;
                         this.isDownload = false;
+                        pdf = null;
+                        this.stopTimer();
                     });
                 });
             });
@@ -196,8 +215,8 @@ export class MangaDownloadPage {
         this.countImages = 0;
     }
 
-    dismiss() {
-        this.viewCtrl.dismiss();
+    closeDownload() {
+        this.navCtrl.pop();
     }
 
 

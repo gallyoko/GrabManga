@@ -71,6 +71,7 @@ export class CommonService {
               });
           } else {
               pdfObj.download(name+'.pdf');
+              pdfObj = null;
               resolve({'path': path, 'name': name});
           }
       });

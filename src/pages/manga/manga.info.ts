@@ -54,7 +54,7 @@ export class MangaInfoPage {
         });
     }
 
-    openModal() {
+    openDownload() {
         this.navCtrl.push(MangaDownloadPage, { manga: this.manga });
     }
 

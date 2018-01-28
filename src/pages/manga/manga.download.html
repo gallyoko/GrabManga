@@ -4,7 +4,7 @@
       {{manga.title}} / Téléchargement
     </ion-title>
     <ion-buttons left>
-      <button ion-button *ngIf="!isDownload" (click)="dismiss()">
+      <button ion-button *ngIf="!isDownload" (click)="closeDownload()">
         <ion-icon name="ios-arrow-back-outline"></ion-icon>
       </button>
       <button ion-button *ngIf="isDownload">

@@ -16,6 +16,7 @@ export class MangaPage {
     constructor(private navCtrl: NavController, private commonService: CommonService) {
         this.paginatorAlpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'
             , 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+        this.mangaList = [];
         this.commonService.getMangas().then(mangas => {
             if (mangas) {
                 this.mangaList = mangas;
