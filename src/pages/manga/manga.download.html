@@ -29,12 +29,15 @@
     <ion-item *ngIf="showDlTomeButton">
       <ion-grid>
         <ion-row>
-          <ion-col col-9>Télécharger le tome</ion-col>
-          <ion-col col-3>
-            <button color="danger" ion-button (click)="downloadTome()" *ngIf="!isDownload">
+          <ion-col col-12>
+            <button color="danger" ion-button (click)="downloadTome()" *ngIf="!isDownload" full>
+              <ion-icon name="cloud-download"></ion-icon>
+              &nbsp;&nbsp;Télécharger le tome&nbsp;&nbsp;
               <ion-icon name="cloud-download"></ion-icon>
             </button>
-            <button color="danger" ion-button *ngIf="isDownload">
+            <button color="danger" ion-button *ngIf="isDownload" full>
+              <ion-icon name="ios-lock"></ion-icon>
+              &nbsp;&nbsp;Télécharger le tome&nbsp;&nbsp;
               <ion-icon name="ios-lock"></ion-icon>
             </button>
           </ion-col>
@@ -50,12 +53,15 @@
     <ion-item *ngIf="showChapters">
       <ion-grid>
         <ion-row>
-          <ion-col col-9>Télécharger le chapitre</ion-col>
-          <ion-col col-3>
-            <button ion-button color="danger" (click)="downloadChapter()" *ngIf="!isDownload">
+          <ion-col col-12>
+            <button color="danger" ion-button (click)="downloadChapter()" *ngIf="!isDownload" full>
+              <ion-icon name="cloud-download"></ion-icon>
+              &nbsp;&nbsp;Télécharger le chapitre&nbsp;&nbsp;
               <ion-icon name="cloud-download"></ion-icon>
             </button>
-            <button ion-button color="danger" *ngIf="isDownload">
+            <button color="danger" ion-button *ngIf="isDownload" full>
+              <ion-icon name="ios-lock"></ion-icon>
+              &nbsp;&nbsp;Télécharger le chapitre&nbsp;&nbsp;
               <ion-icon name="ios-lock"></ion-icon>
             </button>
           </ion-col>
@@ -84,8 +90,8 @@
       <ion-grid>
         <ion-row>
           <ion-col col-11>
-            <span *ngIf="isStep0">Récupération des urls en cours...</span>
-            <span *ngIf="!isStep0">Récupération des urls terminée</span>
+            <span *ngIf="isStep0">1/3 - Récupération des urls en cours...</span>
+            <span *ngIf="!isStep0">1/3 - Récupération des urls terminée</span>
           </ion-col>
           <ion-col col-1>
             <i *ngIf="!isStep0" class="fa fa-check fa-lg"></i>
@@ -98,9 +104,9 @@
       <ion-grid>
         <ion-row>
           <ion-col col-11>
-            <span *ngIf="isStep0 && !isStep1">Génération du PDF en attente...</span>
-            <span *ngIf="!isStep0 && isStep1">Génération du PDF en cours...</span>
-            <span *ngIf="!isStep1 && !isStep0">Génération du PDF terminé</span>
+            <span *ngIf="isStep0 && !isStep1">2/3 - Génération du PDF en attente...</span>
+            <span *ngIf="!isStep0 && isStep1">2/3 - Génération du PDF en cours...</span>
+            <span *ngIf="!isStep1 && !isStep0">2/3 - Génération du PDF terminé</span>
           </ion-col>
           <ion-col col-1>
             <i *ngIf="!isStep1 && !isStep0" class="fa fa-check fa-lg"></i>
@@ -118,9 +124,9 @@
       <ion-grid>
         <ion-row>
           <ion-col col-11>
-            <span *ngIf="isStep2 && !isStep2Finish">Ecriture du PDF en cours...</span>
-            <span *ngIf="!isStep2 && !isStep2Finish">Ecriture du PDF en attente...</span>
-            <span *ngIf="isStep2Finish">Ecriture du PDF terminé</span>
+            <span *ngIf="isStep2 && !isStep2Finish">3/3 - Ecriture du PDF en cours...</span>
+            <span *ngIf="!isStep2 && !isStep2Finish">3/3 - Ecriture du PDF en attente...</span>
+            <span *ngIf="isStep2Finish">3/3 - Ecriture du PDF terminé</span>
           </ion-col>
           <ion-col col-1>
             <i *ngIf="isStep2Finish" class="fa fa-check fa-lg"></i>

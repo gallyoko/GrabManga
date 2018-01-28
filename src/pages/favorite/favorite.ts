@@ -55,10 +55,10 @@ export class FavoritePage {
         let buttonLabels = ['Voir les téléchargements'];
         const options: ActionSheetOptions = {
             title: favorite.title,
-            subtitle: 'Choose an action',
+            subtitle: 'Choisissez une action',
             buttonLabels: buttonLabels,
-            addCancelButtonWithLabel: 'Cancel',
-            addDestructiveButtonWithLabel: 'Delete',
+            addCancelButtonWithLabel: 'Annuler',
+            addDestructiveButtonWithLabel: 'Supprimer',
             androidTheme: this.actionSheet.ANDROID_THEMES.THEME_HOLO_DARK,
             destructiveButtonLast: true
         };
@@ -85,7 +85,7 @@ export class FavoritePage {
                     }
                 },
                 {
-                    text: 'Delete',
+                    text: 'Supprimer',
                     role: 'destructive',
                     icon: 'trash',
                     handler: () => {
@@ -93,7 +93,7 @@ export class FavoritePage {
                     }
                 },
                 {
-                    text: 'Cancel',
+                    text: 'Annuler',
                     role: 'cancel',
                     icon: 'close',
                     handler: () => {

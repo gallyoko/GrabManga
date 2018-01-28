@@ -30,10 +30,10 @@
     </ion-row>
     <ion-row *ngIf="waitCover">
       <ion-col col-6></ion-col>
-      <ion-col col-2>
+      <ion-col col-1>
         <i class="fa-li fa fa-spinner fa-spin"></i>
       </ion-col>
-      <ion-col col-4></ion-col>
+      <ion-col col-5></ion-col>
     </ion-row>
     <ion-row>
       <ion-col col-12>
@@ -44,13 +44,11 @@
   <p>
     {{manga.synopsis}}
   </p>
-  <ion-list>
-    <ion-item>
-      Voir les téléchargements
-      <button color="danger" ion-button (click)="openDownload()">
-        <ion-icon name="cloud-download"></ion-icon>
-      </button>
-    </ion-item>
-  </ion-list>
-
+  <p>
+    <button color="danger" ion-button (click)="openDownload()" full>
+      <ion-icon name="cloud-download"></ion-icon>
+      &nbsp;&nbsp;Voir les téléchargements&nbsp;&nbsp;
+      <ion-icon name="cloud-download"></ion-icon>
+    </button>
+  </p>
 </ion-content>
