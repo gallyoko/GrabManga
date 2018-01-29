@@ -26,14 +26,13 @@ export class JapscanService {
     private timer: any;
 
     constructor(public http: Http) {
-        this.urlApi = '/api';
-        //this.urlApi = 'http://m.japscan.com';
-        this.urlDepot = '/book';
-        //this.urlDepot = 'http://ww1.japscan.com/lel';
-        this.urlImage = '/images';
-        //this.urlImage = 'https://www.google.fr';
-        this.timer = 500;
-        //this.timer = 1000;
+        //this.urlApi = '/api';
+        this.urlApi = 'http://m.japscan.com';
+        //this.urlDepot = '/book';
+        this.urlDepot = 'http://ww1.japscan.com/lel';
+        //this.urlImage = '/images';
+        this.urlImage = 'https://www.google.fr';
+        this.timer = 1000;
         this.witdhResolutionImage = 560;
         this.heightResolutionImage = 840;
         this.resize = false;
@@ -237,7 +236,7 @@ export class JapscanService {
                                             }
                                         }
                                         let urlMask: any = this.urlDepot + '/' + dataUrlNom.replace(/ /g, '-') + '/'  + dataUrlTome.replace(/ /g, '-') + '/';
-                                        images.urlMask = urlMask;
+                                        images.urlMask = urlMask.replace('"-></select>', '');
                                         images.pages = bookPages;
                                         images.order = chapter.order;
                                         bookPages = [];
