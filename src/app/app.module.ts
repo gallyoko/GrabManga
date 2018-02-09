@@ -10,6 +10,7 @@ import { MangaPage } from '../pages/manga/manga';
 import { MangaInfoPage } from '../pages/manga/manga.info';
 import { MangaDownloadPage } from '../pages/manga/manga.download';
 import { FavoritePage } from '../pages/favorite/favorite';
+import { DownloadPage } from '../pages/download/download';
 
 import { ProgressBarComponent } from '../directives/progress-bar/progress-bar';
 
@@ -34,6 +35,7 @@ import { Dialogs } from '@ionic-native/dialogs';
       MangaInfoPage,
       MangaDownloadPage,
       FavoritePage,
+      DownloadPage,
       ProgressBarComponent
   ],
   imports: [
@@ -49,7 +51,8 @@ import { Dialogs } from '@ionic-native/dialogs';
       MangaPage,
       MangaInfoPage,
       MangaDownloadPage,
-      FavoritePage
+      FavoritePage,
+      DownloadPage
   ],
   providers: [
       StatusBar,

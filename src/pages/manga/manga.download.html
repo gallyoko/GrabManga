@@ -4,11 +4,8 @@
       {{manga.title}} / Téléchargement
     </ion-title>
     <ion-buttons left>
-      <button ion-button *ngIf="!isDownload" (click)="closeDownload()">
+      <button ion-button (click)="closeDownload()">
         <ion-icon name="ios-arrow-back-outline"></ion-icon>
-      </button>
-      <button ion-button *ngIf="isDownload">
-        <ion-icon name="ios-lock-outline"></ion-icon>
       </button>
     </ion-buttons>
   </ion-toolbar>
@@ -22,7 +19,7 @@
     </ion-item>
     <ion-item>
       <ion-label>Tome</ion-label>
-      <ion-select disabled="{{isDownload}}" [(ngModel)]="tomeIndex" submitText="Ok" cancelText="Annuler" (ngModelChange)="loadChapters()">
+      <ion-select [(ngModel)]="tomeIndex" submitText="Ok" cancelText="Annuler" (ngModelChange)="loadChapters()">
         <ion-option *ngFor="let tome of manga.tomes; let i = index" value="{{i}}">{{tome.title}}</ion-option>
       </ion-select>
     </ion-item>
@@ -30,15 +27,10 @@
       <ion-grid>
         <ion-row>
           <ion-col col-12>
-            <button color="danger" ion-button (click)="downloadTome()" *ngIf="!isDownload" full>
+            <button color="danger" ion-button (click)="downloadTome()" full>
               <ion-icon name="cloud-download"></ion-icon>
               &nbsp;&nbsp;Télécharger le tome&nbsp;&nbsp;
               <ion-icon name="cloud-download"></ion-icon>
-            </button>
-            <button color="danger" ion-button *ngIf="isDownload" full>
-              <ion-icon name="ios-lock"></ion-icon>
-              &nbsp;&nbsp;Télécharger le tome&nbsp;&nbsp;
-              <ion-icon name="ios-lock"></ion-icon>
             </button>
           </ion-col>
         </ion-row>
@@ -46,7 +38,7 @@
     </ion-item>
     <ion-item *ngIf="showChapters">
       <ion-label>Chapitre</ion-label>
-      <ion-select disabled="{{isDownload}}" [(ngModel)]="chapterIndex" submitText="Ok" cancelText="Annuler" (ngModelChange)="resetDownloadResult()">
+      <ion-select [(ngModel)]="chapterIndex" submitText="Ok" cancelText="Annuler">
         <ion-option *ngFor="let chapter of chapters; let j = index" value="{{j}}">{{chapter.title}}</ion-option>
       </ion-select>
     </ion-item>
@@ -54,83 +46,11 @@
       <ion-grid>
         <ion-row>
           <ion-col col-12>
-            <button color="danger" ion-button (click)="downloadChapter()" *ngIf="!isDownload" full>
+            <button color="danger" ion-button (click)="downloadChapter()" full>
               <ion-icon name="cloud-download"></ion-icon>
               &nbsp;&nbsp;Télécharger le chapitre&nbsp;&nbsp;
               <ion-icon name="cloud-download"></ion-icon>
             </button>
-            <button color="danger" ion-button *ngIf="isDownload" full>
-              <ion-icon name="ios-lock"></ion-icon>
-              &nbsp;&nbsp;Télécharger le chapitre&nbsp;&nbsp;
-              <ion-icon name="ios-lock"></ion-icon>
-            </button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-  </ion-list>
-  <ion-list *ngIf="showResultDownload">
-    <ion-item >
-      <ion-grid>
-        <ion-row>
-          <ion-col col-10>
-            <span *ngIf="isDownload">Téléchargement en cours...</span>
-            <span *ngIf="!isDownload">Téléchargement terminé</span>
-            <span *ngIf="!isDownload && downloadError">Erreur de téléchargement</span>
-          </ion-col>
-          <ion-col col-2>
-            <i *ngIf="!isDownload" class="fa fa-check-circle-o fa-2x fa-lg"></i>
-            <i *ngIf="isDownload" class="fa fa-spinner fa-spin fa-2x fa-lg"></i>
-            <ion-icon *ngIf="!isDownload && downloadError" name="ios-thumbs-down-outline"></ion-icon>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-    <ion-item >
-      <ion-grid>
-        <ion-row>
-          <ion-col col-11>
-            <span *ngIf="isStep0">1/3 - Récupération des urls en cours...</span>
-            <span *ngIf="!isStep0">1/3 - Récupération des urls terminée</span>
-          </ion-col>
-          <ion-col col-1>
-            <i *ngIf="!isStep0" class="fa fa-check fa-lg"></i>
-            <i *ngIf="isStep0" class="fa fa-spinner fa-spin fa-lg"></i>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-    <ion-item >
-      <ion-grid>
-        <ion-row>
-          <ion-col col-11>
-            <span *ngIf="isStep0 && !isStep1">2/3 - Génération du PDF en attente...</span>
-            <span *ngIf="!isStep0 && isStep1">2/3 - Génération du PDF en cours...</span>
-            <span *ngIf="!isStep1 && !isStep0">2/3 - Génération du PDF terminé</span>
-          </ion-col>
-          <ion-col col-1>
-            <i *ngIf="!isStep1 && !isStep0" class="fa fa-check fa-lg"></i>
-            <i *ngIf="isStep1" class="fa fa-spinner fa-spin fa-lg"></i>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col col-12>
-            <progress-bar [progress]="progress"></progress-bar>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-    <ion-item >
-      <ion-grid>
-        <ion-row>
-          <ion-col col-11>
-            <span *ngIf="isStep2 && !isStep2Finish">3/3 - Ecriture du PDF en cours...</span>
-            <span *ngIf="!isStep2 && !isStep2Finish">3/3 - Ecriture du PDF en attente...</span>
-            <span *ngIf="isStep2Finish">3/3 - Ecriture du PDF terminé</span>
-          </ion-col>
-          <ion-col col-1>
-            <i *ngIf="isStep2Finish" class="fa fa-check fa-lg"></i>
-            <i *ngIf="isStep2 && !isStep2Finish" class="fa fa-spinner fa-spin fa-lg"></i>
           </ion-col>
         </ion-row>
       </ion-grid>

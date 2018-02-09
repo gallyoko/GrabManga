@@ -7,6 +7,9 @@ import { File } from '@ionic-native/file';
 import { FileOpener } from '@ionic-native/file-opener';
 import { NativeStorage } from '@ionic-native/native-storage';
 import 'rxjs/add/operator/map';
+import {TomeModel} from "../models/tome.model";
+import {ChapterModel} from "../models/chapter.model";
+import {DownloadModel} from "../models/download.model";
 
 @Injectable()
 export class CommonService {
@@ -143,38 +146,6 @@ export class CommonService {
         }
     }
 
-  setDownload(download) {
-      if (this.platform.is('cordova')) {
-          return this.nativeStorage.setItem('download', download)
-              .then(
-                  () => {
-                      return Promise.resolve(true);
-                  },
-                  error => {
-                      return Promise.resolve(false);
-                  }
-              );
-      } else {
-          return Promise.resolve(this.storage.set('download', download));
-      }
-  }
-
-  getDownload() {
-      if (this.platform.is('cordova')) {
-          return this.nativeStorage.getItem('download')
-              .then(
-                  data => {
-                      return Promise.resolve(data);
-                  },
-                  error => {
-                      return Promise.resolve(false);
-                  }
-              );
-      } else {
-          return Promise.resolve(this.storage.get('download'));
-      }
-  }
-
     setFavorites(favorites) {
         if (this.platform.is('cordova')) {
             return this.nativeStorage.setItem('favorites', favorites)
@@ -249,5 +220,71 @@ export class CommonService {
             }
             return false;
         });
+    }
+
+    setDownloadTome(tome: TomeModel, compression: boolean = true) {
+        return this.getDownloads().then(getDownloads => {
+            const downloads: any = getDownloads;
+            let downloadsToSave:any = [];
+            let order: number = 1;
+            if (downloads) {
+                downloadsToSave = downloads;
+                order = downloads.length + 1;
+            }
+            let download: DownloadModel = new DownloadModel(order, compression, tome);
+            downloadsToSave.push(download);
+            return this.setDownloads(downloadsToSave).then(setDownloads => {
+                return setDownloads;
+            });
+        });
+    }
+
+    setDownloadChapter(chapter: ChapterModel, compression: boolean = true) {
+        return this.getDownloads().then(getDownloads => {
+            const downloads: any = getDownloads;
+            let downloadsToSave:any = [];
+            let order: number = 1;
+            if (downloads) {
+                downloadsToSave = downloads;
+                order = downloads.length + 1;
+            }
+            let download: DownloadModel = new DownloadModel(order, compression, null, chapter);
+            downloadsToSave.push(download);
+            return this.setDownloads(downloadsToSave).then(setDownloads => {
+                return setDownloads;
+            });
+        });
+    }
+
+    setDownloads(downloads) {
+        if (this.platform.is('cordova')) {
+            return this.nativeStorage.setItem('downloads', downloads)
+                .then(
+                    () => {
+                        return Promise.resolve(true);
+                    },
+                    error => {
+                        return Promise.resolve(false);
+                    }
+                );
+        } else {
+            return Promise.resolve(this.storage.set('downloads', downloads));
+        }
+    }
+
+    getDownloads() {
+        if (this.platform.is('cordova')) {
+            return this.nativeStorage.getItem('downloads')
+                .then(
+                    data => {
+                        return Promise.resolve(data);
+                    },
+                    error => {
+                        return Promise.resolve(false);
+                    }
+                );
+        } else {
+            return Promise.resolve(this.storage.get('downloads'));
+        }
     }
 }
