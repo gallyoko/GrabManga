@@ -60,7 +60,14 @@ export class MangaDownloadPage {
     downloadTome() {
         if (this.tomeIndex) {
             if (this.manga.tomes[this.tomeIndex].chapters.length < 12) {
-                this.commonService.setDownloadTome(this.manga.tomes[this.tomeIndex], this.compressionMode).then(setDownloadTome => {
+                let title: string = '';
+                if (this.manga.tomes[this.tomeIndex].title == '') {
+                    title = this.manga.title + '_tome-' + (this.tomeIndex +1);
+                } else {
+                    title = this.manga.title + '_' +
+                        this.manga.tomes[this.tomeIndex].title;
+                }
+                this.commonService.setDownloadTome(title, this.manga.tomes[this.tomeIndex], this.compressionMode).then(setDownloadTome => {
                     if (setDownloadTome) {
                         this.commonService.toastShow('Le tome a été ajouté aux téléchargements.');
                     } else {
@@ -80,7 +87,9 @@ export class MangaDownloadPage {
             if (!this.tomeIndex) {
                 this.tomeIndex = 0;
             }
-            this.commonService.setDownloadChapter(this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex], this.compressionMode).then(setDownloadChapter => {
+            const title: string = this.manga.title + '_' +
+                this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex].title;
+            this.commonService.setDownloadChapter(title, this.manga.tomes[this.tomeIndex].chapters[this.chapterIndex], this.compressionMode).then(setDownloadChapter => {
                 if (setDownloadChapter) {
                     this.commonService.toastShow('Le chapitre a été ajouté aux téléchargements.');
                 } else {

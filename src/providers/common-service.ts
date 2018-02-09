@@ -222,7 +222,7 @@ export class CommonService {
         });
     }
 
-    setDownloadTome(tome: TomeModel, compression: boolean = true) {
+    setDownloadTome(title: string, tome: TomeModel, compression: boolean = true) {
         return this.getDownloads().then(getDownloads => {
             const downloads: any = getDownloads;
             let downloadsToSave:any = [];
@@ -231,7 +231,7 @@ export class CommonService {
                 downloadsToSave = downloads;
                 order = downloads.length + 1;
             }
-            let download: DownloadModel = new DownloadModel(order, compression, tome);
+            let download: DownloadModel = new DownloadModel(order, title, compression, tome);
             downloadsToSave.push(download);
             return this.setDownloads(downloadsToSave).then(setDownloads => {
                 return setDownloads;
@@ -239,7 +239,7 @@ export class CommonService {
         });
     }
 
-    setDownloadChapter(chapter: ChapterModel, compression: boolean = true) {
+    setDownloadChapter(title: string, chapter: ChapterModel, compression: boolean = true) {
         return this.getDownloads().then(getDownloads => {
             const downloads: any = getDownloads;
             let downloadsToSave:any = [];
@@ -248,7 +248,7 @@ export class CommonService {
                 downloadsToSave = downloads;
                 order = downloads.length + 1;
             }
-            let download: DownloadModel = new DownloadModel(order, compression, null, chapter);
+            let download: DownloadModel = new DownloadModel(order, title, compression, null, chapter);
             downloadsToSave.push(download);
             return this.setDownloads(downloadsToSave).then(setDownloads => {
                 return setDownloads;
@@ -287,4 +287,25 @@ export class CommonService {
             return Promise.resolve(this.storage.get('downloads'));
         }
     }
+
+    removeDownload(download: DownloadModel) {
+        return this.getDownloads().then(downloads => {
+            let downloadsToSave:any = [];
+            if (downloads) {
+                let order: number = 1;
+                for(let i = 0; i < downloads.length; i++) {
+                    if (download.title != downloads[i].title) {
+                        let downloadToSave = downloads[i];
+                        downloadToSave.order = order;
+                        downloadsToSave.push(downloadToSave);
+                        order++;
+                    }
+                }
+            }
+            return this.setDownloads(downloadsToSave).then(setDownloads => {
+                return setDownloads;
+            });
+        });
+    }
+
 }
