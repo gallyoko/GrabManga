@@ -8,27 +8,37 @@ import { MangaPage } from '../pages/manga/manga';
 import { FavoritePage } from '../pages/favorite/favorite';
 import { DownloadPage } from '../pages/download/download';
 
+import { CommonService } from '../providers/common-service';
+
+import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
+
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
+    private timer: any;
+    private callTimer: any;
+
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = HomePage;
 
-  pages: Array<{title: string, component: any, icon: string}>;
+  pages: Array<{title: string, component: any, icon: string, badge: boolean, badgeValue: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar,
+              public splashScreen: SplashScreen, private commonService: CommonService) {
+      this.timer = 1000;
     this.initializeApp();
-
     // used for an example of ngFor and navigation
-    this.pages = [
-        { title: 'Accueil', component: HomePage, icon:'home' },
-        { title: 'Recherche', component: MangaPage, icon:'search' },
-        { title: 'Favoris', component: FavoritePage, icon:'bookmarks' },
-        { title: 'Téléchargement', component: DownloadPage, icon:'download' }
-    ];
-
+    this.commonService.getCountDownload().then(count => {
+      this.pages = [
+          { title: 'Accueil', component: HomePage, icon:'home', badge: false, badgeValue: null },
+          { title: 'Recherche', component: MangaPage, icon:'search', badge: false, badgeValue: null },
+          { title: 'Favoris', component: FavoritePage, icon:'bookmarks', badge: false, badgeValue: null },
+          { title: 'Téléchargement', component: DownloadPage, icon:'download', badge: true, badgeValue: count }
+      ];
+    });
+    this.callTimer = this.startTimer().subscribe();
   }
 
   initializeApp() {
@@ -38,6 +48,18 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+  }
+
+  startTimer = () => {
+    return IntervalObservable
+      .create(this.timer)
+      .map((i) => this.setCountDownload())
+  }
+
+  setCountDownload() {
+      this.commonService.getCountDownload().then(count => {
+          this.pages[3].badgeValue = count;
+      });
   }
 
   openPage(page) {

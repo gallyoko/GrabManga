@@ -9,7 +9,11 @@
     <ion-list>
       <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
         <ion-icon name="{{p.icon}}" class="icon-title"></ion-icon>
-        <span>{{p.title}}</span>
+        <span>
+          {{p.title}}
+          <ion-badge *ngIf="p.badge" color="danger" item-end
+                     style="position: absolute; right: 8px; margin-top: 1px;">{{p.badgeValue}}</ion-badge>
+        </span>
       </button>
     </ion-list>
   </ion-content>

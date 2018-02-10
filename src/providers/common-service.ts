@@ -288,13 +288,24 @@ export class CommonService {
         }
     }
 
+    getCountDownload() {
+        return this.getDownloads().then(getDownloads => {
+            let count: number = 0;
+            if (getDownloads) {
+                let downloads:any = getDownloads;
+                count = downloads.length;
+            }
+            return count;
+        });
+    }
+
     removeDownload(download: DownloadModel) {
         return this.getDownloads().then(downloads => {
             let downloadsToSave:any = [];
             if (downloads) {
                 let order: number = 1;
                 for(let i = 0; i < downloads.length; i++) {
-                    if (download.title != downloads[i].title) {
+                    if (download.order != downloads[i].order) {
                         let downloadToSave = downloads[i];
                         downloadToSave.order = order;
                         downloadsToSave.push(downloadToSave);
